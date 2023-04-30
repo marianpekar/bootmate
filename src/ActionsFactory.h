@@ -3,7 +3,16 @@
 #include <vector>
 #include <string>
 
-struct ActionsFactory
+typedef std::vector<struct Action*> Actions;
+typedef std::vector<std::string> Lines;
+
+class ActionsFactory
 {
-	static std::vector<struct Action*> CreateActions(const std::string filename);
+public:
+	static Actions CreateActions(const std::string& filename);
+private:
+	static int loopCount;
+	static int loopBeginIdx;
+	static Lines LoadLines(const std::string& filename);
+	static Actions ProcessLines(Lines& lines);
 };

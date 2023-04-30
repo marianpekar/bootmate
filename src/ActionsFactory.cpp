@@ -3,20 +3,28 @@
 #include "Actions.h"
 #include "ActionsFactory.h"
 
-std::vector<struct Action*> ActionsFactory::CreateActions(const std::string filename)
+std::vector<struct Action*> ActionsFactory::CreateActions(const std::string& filename)
 {
-    std::vector<Action*> actions;
+    Lines lines = LoadLines(filename);
+    Actions actions = ProcessLines(lines);
+    return actions;
+}
+
+Lines ActionsFactory::LoadLines(const std::string& filename)
+{
+    Lines lines;
     std::ifstream file(filename);
 
     if (!file.is_open())
     {
         std::cerr << "Unable to open file: " << filename << std::endl;
-        return actions;
+        return lines;
     }
 
     std::string line;
     while (getline(file, line))
     {
+        // remove comment
         size_t comment = line.find(';');
         if (comment != std::string::npos)
             line = line.substr(0, comment);
@@ -27,13 +35,42 @@ std::vector<struct Action*> ActionsFactory::CreateActions(const std::string file
         if (line.empty())
             continue;
 
-        size_t i = line.find(':');
-        if (i == std::string::npos)
+        lines.emplace_back(line);
+    }
+    file.close();
+
+    return lines;
+}
+
+int ActionsFactory::loopCount = 0;
+int ActionsFactory::loopBeginIdx = 0;
+Actions ActionsFactory::ProcessLines(Lines& lines)
+{
+    Actions actions;
+    for (size_t i = 0; i < lines.size(); ++i)
+    {
+        std::string line = lines[i];
+
+        if (line == "end" && loopCount > 1)
+        {
+            --loopCount;
+            i = loopBeginIdx;
+            line = lines[i];
+        }
+
+        size_t find = lines[i].find(':');
+        if (find == std::string::npos)
             continue;
 
-        std::string key = line.substr(0, i);
-        std::string value = line.substr(i + 1);
-        if (key == ActionTypeName.writeAction)
+        std::string key = line.substr(0, find);
+        std::string value = line.substr(find + 1);
+
+        if (key == "loop")
+        {   
+            loopBeginIdx = i + 1;
+            loopCount = std::stoi(value);
+        }
+        else if (key == ActionTypeName.writeAction)
         {
             std::wstring chars(value.begin(), value.end());
             for (const auto& c : chars)
@@ -53,9 +90,9 @@ std::vector<struct Action*> ActionsFactory::CreateActions(const std::string file
         }
         else if (key == ActionTypeName.setCursorPosAction)
         {
-            i = value.find(' ');
-            int x = std::stoi(value.substr(0, i));
-            int y = std::stoi(value.substr(i + 1));
+            find = value.find(' ');
+            int x = std::stoi(value.substr(0, find));
+            int y = std::stoi(value.substr(find + 1));
             actions.emplace_back(new SetCursorPosAction(x, y));
         }
         else if (key == ActionTypeName.mousceClickAction)
@@ -68,6 +105,5 @@ std::vector<struct Action*> ActionsFactory::CreateActions(const std::string file
             actions.emplace_back(new MouseScrollAction(scrollValue));
         }
     }
-    file.close();
     return actions;
 }
