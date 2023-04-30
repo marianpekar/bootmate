@@ -117,6 +117,13 @@ int main(int argc, char* argv[])
                     clickAction->Execute();
                     delete clickAction;
                 }
+                else if (action->type == ActionTypeName.mouseScrollAction)
+                {
+                    MouseScrollAction* scrollAction = reinterpret_cast<MouseScrollAction*>(action);
+                    scrollAction->Execute();
+                    delete scrollAction;
+                }
+                Sleep(1);
             }
         }
         CloseHandle(pi.hThread);

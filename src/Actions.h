@@ -12,6 +12,7 @@ static struct ActionTypeName
     const char* sleepAction = "sleep";
     const char* setCursorPosAction = "cursor";
     const char* mousceClickAction = "click";
+    const char* mouseScrollAction = "scroll";
 
 } ActionTypeName;
 
@@ -86,7 +87,7 @@ struct SetCursorPosAction : public Action
 
 struct MouseClickAction : public Action
 {
-    int dwFlags = 0;
+    DWORD dwFlags = 0;
 
     MouseClickAction(std::string mouseClickName) : Action(ActionTypeName.mousceClickAction)
     {
@@ -109,6 +110,22 @@ struct MouseClickAction : public Action
         INPUT input{ 0 };
         input.type = INPUT_MOUSE;
         input.mi.dwFlags = dwFlags;
+        SendInput(1, &input, sizeof(INPUT));
+    }
+};
+
+struct MouseScrollAction : public Action
+{
+    DWORD scrollValue;
+    
+    MouseScrollAction(DWORD scrollValue) : Action(ActionTypeName.mouseScrollAction), scrollValue(scrollValue) {}
+
+    void Execute() override
+    {
+        INPUT input{ 0 };
+        input.type = INPUT_MOUSE;
+        input.mi.dwFlags = MOUSEEVENTF_WHEEL;
+        input.mi.mouseData = scrollValue;
         SendInput(1, &input, sizeof(INPUT));
     }
 };

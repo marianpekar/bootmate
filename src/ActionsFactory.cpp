@@ -62,6 +62,11 @@ std::vector<struct Action*> ActionsFactory::CreateActions(const std::string file
         {
             actions.emplace_back(new MouseClickAction(value));
         }
+        else if (key == ActionTypeName.mouseScrollAction)
+        {
+            DWORD scrollValue = std::stol(value);
+            actions.emplace_back(new MouseScrollAction(scrollValue));
+        }
     }
     file.close();
     return actions;
