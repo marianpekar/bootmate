@@ -128,10 +128,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="../src/Main.cpp" />
+    <ClCompile Include="..\src\Main.cpp" />
+    <ClCompile Include="..\src\ActionsFactory.cpp" />
+    <ClCompile Include="..\src\ConfigLoader.cpp" />
+    <ClCompile Include="..\src\WindowUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="../src/Actions.h" />
+    <ClInclude Include="..\src\Actions.h" />
+    <ClInclude Include="..\src\ActionsFactory.h" />
+    <ClInclude Include="..\src\ConfigLoader.h" />
+    <ClInclude Include="..\src\WindowUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
