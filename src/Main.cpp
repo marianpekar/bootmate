@@ -111,6 +111,12 @@ int main(int argc, char* argv[])
                     cursorAction->Execute();
                     delete cursorAction;
                 }
+                else if (action->type == ActionTypeName.mousceClickAction)
+                {
+                    MouseClickAction* clickAction = reinterpret_cast<MouseClickAction*>(action);
+                    clickAction->Execute();
+                    delete clickAction;
+                }
             }
         }
         CloseHandle(pi.hThread);

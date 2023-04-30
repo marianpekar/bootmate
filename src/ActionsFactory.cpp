@@ -58,6 +58,10 @@ std::vector<struct Action*> ActionsFactory::CreateActions(const std::string file
             int y = std::stoi(value.substr(i + 1));
             actions.emplace_back(new SetCursorPosAction(x, y));
         }
+        else if (key == ActionTypeName.mousceClickAction)
+        {
+            actions.emplace_back(new MouseClickAction(value));
+        }
     }
     file.close();
     return actions;

@@ -11,8 +11,17 @@ static struct ActionTypeName
     const char* pressAction = "press";
     const char* sleepAction = "sleep";
     const char* setCursorPosAction = "cursor";
+    const char* mousceClickAction = "click";
 
 } ActionTypeName;
+
+static struct MouseClickNames
+{
+    const char* leftClick = "left";
+    const char* middleClick = "middle";
+    const char* rightClick = "right";
+
+} MouseClickNames;
 
 struct Action
 {
@@ -72,5 +81,34 @@ struct SetCursorPosAction : public Action
     void Execute() override
     {
         SetCursorPos(x, y);
+    }
+};
+
+struct MouseClickAction : public Action
+{
+    int dwFlags = 0;
+
+    MouseClickAction(std::string mouseClickName) : Action(ActionTypeName.mousceClickAction)
+    {
+        if (mouseClickName == MouseClickNames.leftClick)
+        {
+            dwFlags = MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP;
+        }
+        else if (mouseClickName == MouseClickNames.middleClick)
+        {
+            dwFlags = MOUSEEVENTF_MIDDLEDOWN | MOUSEEVENTF_MIDDLEUP;
+        }
+        else if (mouseClickName == MouseClickNames.rightClick)
+        {
+            dwFlags = MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP;
+        }
+    }
+
+    void Execute() override
+    {
+        INPUT input{ 0 };
+        input.type = INPUT_MOUSE;
+        input.mi.dwFlags = dwFlags;
+        SendInput(1, &input, sizeof(INPUT));
     }
 };
