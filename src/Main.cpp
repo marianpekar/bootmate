@@ -87,23 +87,29 @@ int main(int argc, char* argv[])
             std::vector<Action*> actions = ActionsFactory::CreateActions(recipyPathArg);
             for (auto& action : actions)
             {
-                if (action->type == "write")
+                if (action->type == ActionTypeName.writeAction)
                 {
                     WriteAction* wAction = reinterpret_cast<WriteAction*>(action);
-                    SendInput(1, &wAction->input, sizeof(INPUT));
+                    wAction->Execute();
                     delete wAction;
                 }
-                else if (action->type == "press")
+                else if (action->type == ActionTypeName.pressAction)
                 {
                     PressKeyAction* pkAction = reinterpret_cast<PressKeyAction*>(action);
-                    SendInput(1, &pkAction->input, sizeof(INPUT));
+                    pkAction->Execute();
                     delete pkAction;
                 }
-                else if (action->type == "sleep")
+                else if (action->type == ActionTypeName.sleepAction)
                 {
                     SleepAction* sleepAction = reinterpret_cast<SleepAction*>(action);
-                    Sleep(sleepAction->ms);
+                    sleepAction->Execute();
                     delete sleepAction;
+                }
+                else if (action->type == ActionTypeName.setCursorPosAction)
+                {
+                    SetCursorPosAction* cursorAction = reinterpret_cast<SetCursorPosAction*>(action);
+                    cursorAction->Execute();
+                    delete cursorAction;
                 }
             }
         }

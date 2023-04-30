@@ -27,12 +27,12 @@ std::vector<struct Action*> ActionsFactory::CreateActions(const std::string file
         if (line.empty())
             continue;
 
-        size_t equals = line.find(':');
-        if (equals == std::string::npos)
+        size_t i = line.find(':');
+        if (i == std::string::npos)
             continue;
 
-        std::string key = line.substr(0, equals);
-        std::string value = line.substr(equals + 1);
+        std::string key = line.substr(0, i);
+        std::string value = line.substr(i + 1);
         if (key == ActionTypeName.writeAction)
         {
             std::wstring chars(value.begin(), value.end());
@@ -50,6 +50,13 @@ std::vector<struct Action*> ActionsFactory::CreateActions(const std::string file
         {
             DWORD ms = std::stoul(value);
             actions.emplace_back(new SleepAction(ms));
+        }
+        else if (key == ActionTypeName.setCursorPosAction)
+        {
+            i = value.find(' ');
+            int x = std::stoi(value.substr(0, i));
+            int y = std::stoi(value.substr(i + 1));
+            actions.emplace_back(new SetCursorPosAction(x, y));
         }
     }
     file.close();
