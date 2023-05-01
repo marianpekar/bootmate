@@ -12,8 +12,8 @@ static struct ActionTypeName
     const char* holdAction = "hold";
     const char* releaseAction = "release";
     const char* sleepAction = "sleep";
-    const char* setCursorPosAction = "cursor set";
-    const char* moveCursorAction = "cursor move";
+    const char* setCursorPosAction = "set cursor";
+    const char* moveCursorAction = "move cursor";
     const char* mouseClickAction = "click";
     const char* mouseScrollAction = "scroll";
 
