@@ -9,6 +9,8 @@ static struct ActionTypeName
 {
     const char* writeAction = "write";
     const char* pressAction = "press";
+    const char* holdAction = "hold";
+    const char* releaseAction = "release";
     const char* sleepAction = "sleep";
     const char* setCursorPosAction = "cursor set";
     const char* moveCursorAction = "cursor move";
@@ -96,7 +98,44 @@ static std::map<std::string, int> virtualKeys {
     { "subtract", VK_SUBTRACT },
     { "decimal", VK_DECIMAL },
     { "divide", VK_DIVIDE },
+    { "0", 0x30 },
+    { "1", 0x31 },
+    { "2", 0x32 },
+    { "3", 0x33 },
+    { "4", 0x34 },
+    { "5", 0x35 },
+    { "6", 0x36 },
+    { "7", 0x37 },
+    { "8", 0x38 },
+    { "9", 0x39 },
+    { "a", 0x41 },
+    { "b", 0x42 },
+    { "c", 0x43 },
+    { "d", 0x44 },
+    { "e", 0x45 },
+    { "f", 0x46 },
+    { "g", 0x47 },
+    { "h", 0x48 },
+    { "i", 0x49 },
+    { "j", 0x4A },
+    { "k", 0x4B },
+    { "l", 0x4C },
+    { "m", 0x4D },
+    { "n", 0x4E },
+    { "o", 0x4F },
+    { "p", 0x50 },
+    { "q", 0x51 },
+    { "r", 0x52 },
+    { "s", 0x53 },
+    { "t", 0x54 },
+    { "u", 0x55 },
+    { "v", 0x56 },
+    { "w", 0x57 },
+    { "x", 0x58 },
+    { "y", 0x59 },
+    { "z", 0x5A }
 };
+
 struct PressKeyAction : public Action
 {
     std::string keyName;
@@ -110,6 +149,37 @@ struct PressKeyAction : public Action
         SendInput(1, &input, sizeof(INPUT));
     }
 };
+
+struct HoldKeyAction : public Action
+{
+    std::string keyName;
+    HoldKeyAction(std::string keyName) : Action(ActionTypeName.holdAction), keyName(keyName) {}
+
+    void Execute() override
+    {
+        INPUT input{ 0 };
+        input.type = INPUT_KEYBOARD;
+        input.ki.wVk = virtualKeys[keyName];
+        input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY;
+        SendInput(1, &input, sizeof(INPUT));
+    }
+};
+
+struct ReleaseKeyAction : public Action
+{
+    std::string keyName;
+    ReleaseKeyAction(std::string keyName) : Action(ActionTypeName.releaseAction), keyName(keyName) {}
+
+    void Execute() override
+    {
+        INPUT input{ 0 };
+        input.type = INPUT_KEYBOARD;
+        input.ki.wVk = virtualKeys[keyName];
+        input.ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_EXTENDEDKEY;
+        SendInput(1, &input, sizeof(INPUT));
+    }
+};
+
 
 struct SleepAction : public Action
 {
@@ -145,7 +215,6 @@ struct MoveCursorAction : public Action
         SetCursorPos(currentPos.x + x, currentPos.y + y);
     }
 };
-
 
 struct MouseClickAction : public Action
 {

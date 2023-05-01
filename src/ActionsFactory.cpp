@@ -80,8 +80,15 @@ Actions ActionsFactory::ProcessLines(Lines& lines)
         }
         else if (key == ActionTypeName.pressAction)
         {
-            std::wstring chars(value.begin(), value.end());
             actions.emplace_back(new PressKeyAction(value));
+        }
+        else if (key == ActionTypeName.holdAction)
+        {
+            actions.emplace_back(new HoldKeyAction(value));
+        }
+        else if (key == ActionTypeName.releaseAction)
+        {
+            actions.emplace_back(new ReleaseKeyAction(value));
         }
         else if (key == ActionTypeName.sleepAction)
         {

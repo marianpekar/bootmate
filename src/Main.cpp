@@ -100,6 +100,18 @@ int main(int argc, char* argv[])
                     pkAction->Execute();
                     delete pkAction;
                 }
+                else if (action->type == ActionTypeName.holdAction)
+                {
+                    HoldKeyAction* hkAcation = reinterpret_cast<HoldKeyAction*>(action);
+                    hkAcation->Execute();
+                    delete hkAcation;
+                }
+                else if (action->type == ActionTypeName.releaseAction)
+                {
+                    ReleaseKeyAction* rkAction = reinterpret_cast<ReleaseKeyAction*>(action);
+                    rkAction->Execute();
+                    delete rkAction;
+                }
                 else if (action->type == ActionTypeName.sleepAction)
                 {
                     SleepAction* sleepAction = reinterpret_cast<SleepAction*>(action);
