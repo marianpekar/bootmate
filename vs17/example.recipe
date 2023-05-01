@@ -1,0 +1,14 @@
+loop:2
+write:Knock...
+press:enter
+end
+write:Who's there?
+sleep:1000
+press:enter
+write:It's Bootmate!
+hold:ctrl
+press:s
+release:ctrl
+sleep:500
+write:kkjk.txt
+press:enter
