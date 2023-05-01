@@ -41,3 +41,9 @@ Dict ConfigLoader::ReadIniFile(const std::string filename)
 
     return values;
 }
+
+bool ConfigLoader::HasElement(Dict ini, const std::string key)
+{
+    return ini.find(key) != ini.end();
+
+}

@@ -79,6 +79,7 @@ int main(int argc, char* argv[])
             WindowUtils::FindWindowByTitle(ini["sWindowTitle"]) : 
             WindowUtils::FindTopWindow(processID);
 
+        int defaultDelay = ConfigLoader::HasElement(ini, "iDefaultDelay") ? std::stoi(ini["iDefaultDelay"]) : 1;
         if (targetWindow != NULL)
         {
             SetForegroundWindow(targetWindow);
@@ -123,7 +124,7 @@ int main(int argc, char* argv[])
                     scrollAction->Execute();
                     delete scrollAction;
                 }
-                Sleep(1);
+                Sleep(defaultDelay);
             }
         }
         CloseHandle(pi.hThread);
