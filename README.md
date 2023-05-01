@@ -1,6 +1,6 @@
 # Bootmate
 
-Bootmate is a lightweight automation tool that accepts via command line arguments a recipe script, path to an executable with any command line arguments for this executable and then it runs the provided executable and performs actions defined by the recipe.
+Bootmate is a lightweight automation tool that accepts via command line arguments a recipe file, path to an executable with any command line arguments for this executable and then it runs the provided executable and performs actions from the recipe.
 
 Or you can run Bootmate with just a path to a recipe. In this case, no executable will be run and Bootmate starts performing the actions immediately.
 ```
@@ -38,13 +38,13 @@ It's Bootmate!
 In the example you can see the use of `loop`, `write`, `sleep`, `press`, `hold`, and `release` commands, but there are also commands to drive the mouse, like in this example:
 ```
 set cursor:512 400
-move cursor:0 100
 move cursor:100 0
-move cursor:0 -100
+move cursor:0 100
 move cursor:-100 0
+move cursor:0 -100
 click:left
 ```
-which first sets the cursor position to x 512 and y 400 pixels and then moves along a square-shaped path clockwise.
+which first sets the cursor position to x 512 and y 400 pixels, then moves along a square-shaped path clockwise and simulates a LMB click.
 
 On top of that, Bootmate is configurable by `bootmate.ini` you can but don't have to provide and both ini and recipe file support single-line comments prefixed with `;`.
 
