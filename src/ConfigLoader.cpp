@@ -34,10 +34,12 @@ Dict ConfigLoader::ReadIniFile(const std::string filename)
 
         file.close();
     }
+#if _DEBUG
     else
     {
         std::cerr << "Unable to open file: " << filename << std::endl;
     }
+#endif
 
     return values;
 }

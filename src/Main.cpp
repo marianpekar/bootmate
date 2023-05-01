@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
     wchar_t wExeName[MAX_PATH];
     MultiByteToWideChar(CP_UTF8, 0, exeName.c_str(), -1, wExeName, MAX_PATH);
 
-    bool noMultipleInstances = (bool)std::stoi(ini["bNoMultipleInstances"]);
+    bool noMultipleInstances = ConfigLoader::HasElement(ini, "bNoMultipleInstances") ? (bool)std::stoi(ini["bNoMultipleInstances"]) : false;
     if (noMultipleInstances && WindowUtils::IsAppRunning(snapshot, entry, wExeName))
     {
         std::cout << exeName << " is already running and bNoMultipleInstances=1" << std::endl;
@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
         }
 
         HANDLE processHandle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processID);
-        HWND targetWindow = targetWindow = (bool)std::stoi(ini["bFindWindowByTitle"]) ? 
+        HWND targetWindow = ConfigLoader::HasElement(ini, "bFindWindowByTitle") && std::stoi(ini["bFindWindowByTitle"]) == 1 ?
             WindowUtils::FindWindowByTitle(ini["sWindowTitle"]) : 
             WindowUtils::FindTopWindow(processID);
 
