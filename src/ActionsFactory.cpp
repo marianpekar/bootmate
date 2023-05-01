@@ -109,7 +109,7 @@ Actions ActionsFactory::ProcessLines(Lines& lines)
             int y = std::stoi(value.substr(find + 1));
             actions.emplace_back(new MoveCursorAction(x, y));
         }
-        else if (key == ActionTypeName.mousceClickAction)
+        else if (key == ActionTypeName.mouseClickAction)
         {
             actions.emplace_back(new MouseClickAction(value));
         }

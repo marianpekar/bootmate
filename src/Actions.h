@@ -14,7 +14,7 @@ static struct ActionTypeName
     const char* sleepAction = "sleep";
     const char* setCursorPosAction = "cursor set";
     const char* moveCursorAction = "cursor move";
-    const char* mousceClickAction = "click";
+    const char* mouseClickAction = "click";
     const char* mouseScrollAction = "scroll";
 
 } ActionTypeName;
@@ -224,7 +224,7 @@ struct MouseClickAction : public Action
 {
     DWORD dwFlags = 0;
 
-    MouseClickAction(std::string mouseClickName) : Action(ActionTypeName.mousceClickAction)
+    MouseClickAction(std::string mouseClickName) : Action(ActionTypeName.mouseClickAction)
     {
         if (mouseClickName == MouseClickNames.left)
         {

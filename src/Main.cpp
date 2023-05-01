@@ -130,7 +130,7 @@ int main(int argc, char* argv[])
                     mcAction->Execute();
                     delete mcAction;
                 }
-                else if (action->type == ActionTypeName.mousceClickAction)
+                else if (action->type == ActionTypeName.mouseClickAction)
                 {
                     MouseClickAction* clickAction = reinterpret_cast<MouseClickAction*>(action);
                     clickAction->Execute();
