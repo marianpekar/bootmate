@@ -86,6 +86,7 @@ int main(int argc, char* argv[])
             SetFocus(targetWindow);
 
             std::vector<Action*> actions = ActionsFactory::CreateActions(recipyPathArg);
+            HoldKeyAction* hkAction = nullptr;
             for (auto& action : actions)
             {
                 if (action->type == ActionTypeName.writeAction)
@@ -102,9 +103,8 @@ int main(int argc, char* argv[])
                 }
                 else if (action->type == ActionTypeName.holdAction)
                 {
-                    HoldKeyAction* hkAcation = reinterpret_cast<HoldKeyAction*>(action);
-                    hkAcation->Execute();
-                    delete hkAcation;
+                    hkAction = reinterpret_cast<HoldKeyAction*>(action);
+                    hkAction->Execute();
                 }
                 else if (action->type == ActionTypeName.releaseAction)
                 {
@@ -143,6 +143,11 @@ int main(int argc, char* argv[])
                     delete scrollAction;
                 }
                 Sleep(defaultDelay);
+            }
+            
+            if (hkAction != nullptr)
+            {
+                delete hkAction;
             }
         }
         CloseHandle(pi.hThread);

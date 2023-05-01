@@ -19,11 +19,11 @@ static struct ActionTypeName
 
 } ActionTypeName;
 
-static struct MouseClickNames
+static struct MouseButtonNames
 {
-    const char* leftClick = "left";
-    const char* middleClick = "middle";
-    const char* rightClick = "right";
+    const char* left = "left";
+    const char* middle = "middle";
+    const char* right = "right";
 
 } MouseClickNames;
 
@@ -150,21 +150,6 @@ struct PressKeyAction : public Action
     }
 };
 
-struct HoldKeyAction : public Action
-{
-    std::string keyName;
-    HoldKeyAction(std::string keyName) : Action(ActionTypeName.holdAction), keyName(keyName) {}
-
-    void Execute() override
-    {
-        INPUT input{ 0 };
-        input.type = INPUT_KEYBOARD;
-        input.ki.wVk = virtualKeys[keyName];
-        input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY;
-        SendInput(1, &input, sizeof(INPUT));
-    }
-};
-
 struct ReleaseKeyAction : public Action
 {
     std::string keyName;
@@ -180,6 +165,25 @@ struct ReleaseKeyAction : public Action
     }
 };
 
+struct HoldKeyAction : public Action
+{
+    std::string keyName;
+    HoldKeyAction(std::string keyName) : Action(ActionTypeName.holdAction), keyName(keyName) {}
+
+    void Execute() override
+    {
+        INPUT input{ 0 };
+        input.type = INPUT_KEYBOARD;
+        input.ki.wVk = virtualKeys[keyName];
+        input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY;
+        SendInput(1, &input, sizeof(INPUT));
+    }
+
+    ~HoldKeyAction()
+    {
+        ReleaseKeyAction(keyName).Execute();
+    }
+};
 
 struct SleepAction : public Action
 {
@@ -222,15 +226,15 @@ struct MouseClickAction : public Action
 
     MouseClickAction(std::string mouseClickName) : Action(ActionTypeName.mousceClickAction)
     {
-        if (mouseClickName == MouseClickNames.leftClick)
+        if (mouseClickName == MouseClickNames.left)
         {
             dwFlags = MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP;
         }
-        else if (mouseClickName == MouseClickNames.middleClick)
+        else if (mouseClickName == MouseClickNames.middle)
         {
             dwFlags = MOUSEEVENTF_MIDDLEDOWN | MOUSEEVENTF_MIDDLEUP;
         }
-        else if (mouseClickName == MouseClickNames.rightClick)
+        else if (mouseClickName == MouseClickNames.right)
         {
             dwFlags = MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP;
         }
