@@ -73,10 +73,7 @@ Actions ActionsFactory::ProcessLines(Lines& lines)
         else if (key == ActionTypeName.writeAction)
         {
             std::wstring chars(value.begin(), value.end());
-            for (const auto& c : chars)
-            {
-                actions.emplace_back(new WriteAction(c));
-            }
+            actions.emplace_back(new WriteAction(chars));
         }
         else if (key == ActionTypeName.pressAction)
         {

@@ -4,6 +4,7 @@
 #include <tlhelp32.h>
 #include <string>
 #include <map>
+#include "ConfigLoader.h"
 
 static struct ActionTypeName
 {
@@ -36,16 +37,22 @@ struct Action
 
 struct WriteAction : public Action
 {
-    const wchar_t c;
-    WriteAction(const wchar_t c) : Action(ActionTypeName.writeAction), c(c) {}
-
+    const std::wstring chars;
+    const DWORD delay;
+    WriteAction(const std::wstring chars) : Action(ActionTypeName.writeAction), chars(chars), 
+        delay(ConfigLoader::HasElement("iDefaultWriteDelay") ? std::stoi(ConfigLoader::ini["iDefaultWriteDelay"]) : 1) {}
+    
     void Execute() override
     {
-        INPUT input{ 0 };
-        input.type = INPUT_KEYBOARD;
-        input.ki.wScan = c;
-        input.ki.dwFlags = KEYEVENTF_UNICODE;
-        SendInput(1, &input, sizeof(INPUT));
+        for (const auto& c : chars)
+        {
+            INPUT input{ 0 };
+            input.type = INPUT_KEYBOARD;
+            input.ki.wScan = c;
+            input.ki.dwFlags = KEYEVENTF_UNICODE;
+            SendInput(1, &input, sizeof(INPUT));
+            Sleep(delay);
+        }
     }
 };
 
