@@ -23,7 +23,7 @@ std::string CreateSubprocessCmdLineArgs(int argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
-    Dict ini = ConfigLoader::ReadIniFile("bootmate.ini");
+    ConfigLoader::LoadIniFile("bootmate.ini");
 
     PROCESSENTRY32 entry;
     entry.dwSize = sizeof(PROCESSENTRY32);
@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
     wchar_t wExeName[MAX_PATH];
     MultiByteToWideChar(CP_UTF8, 0, exeName.c_str(), -1, wExeName, MAX_PATH);
 
-    bool noMultipleInstances = ConfigLoader::HasElement(ini, "bNoMultipleInstances") ? (bool)std::stoi(ini["bNoMultipleInstances"]) : false;
+    bool noMultipleInstances = ConfigLoader::HasElement("bNoMultipleInstances") ? (bool)std::stoi(ConfigLoader::ini["bNoMultipleInstances"]) : false;
     if (noMultipleInstances && WindowUtils::IsAppRunning(snapshot, entry, wExeName))
     {
         std::cout << exeName << " is already running and bNoMultipleInstances=1" << std::endl;
@@ -75,11 +75,11 @@ int main(int argc, char* argv[])
         }
 
         HANDLE processHandle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processID);
-        HWND targetWindow = ConfigLoader::HasElement(ini, "bFindWindowByTitle") && std::stoi(ini["bFindWindowByTitle"]) == 1 ?
-            WindowUtils::FindWindowByTitle(ini["sWindowTitle"]) : 
+        HWND targetWindow = ConfigLoader::HasElement("bFindWindowByTitle") && std::stoi(ConfigLoader::ini["bFindWindowByTitle"]) == 1 ?
+            WindowUtils::FindWindowByTitle(ConfigLoader::ini["sWindowTitle"]) :
             WindowUtils::FindTopWindow(processID);
 
-        int defaultDelay = ConfigLoader::HasElement(ini, "iDefaultDelay") ? std::stoi(ini["iDefaultDelay"]) : 1;
+        int defaultDelay = ConfigLoader::HasElement("iDefaultDelay") ? std::stoi(ConfigLoader::ini["iDefaultDelay"]) : 1;
         if (targetWindow != NULL)
         {
             SetForegroundWindow(targetWindow);

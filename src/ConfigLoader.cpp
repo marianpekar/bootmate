@@ -2,9 +2,9 @@
 #include <fstream>
 #include "ConfigLoader.h"
 
-Dict ConfigLoader::ReadIniFile(const std::string filename)
+Dict ConfigLoader::ini;
+void ConfigLoader::LoadIniFile(const std::string filename)
 {
-    Dict values;
     std::ifstream file(filename);
 
     if (file.is_open())
@@ -28,7 +28,7 @@ Dict ConfigLoader::ReadIniFile(const std::string filename)
             {
                 std::string key = line.substr(0, equals);
                 std::string value = line.substr(equals + 1);
-                values[key] = value;
+                ini[key] = value;
             }
         }
 
@@ -40,12 +40,9 @@ Dict ConfigLoader::ReadIniFile(const std::string filename)
         std::cerr << "Unable to open file: " << filename << std::endl;
     }
 #endif
-
-    return values;
 }
 
-bool ConfigLoader::HasElement(Dict ini, const std::string key)
+bool ConfigLoader::HasElement(const std::string key)
 {
     return ini.find(key) != ini.end();
-
 }
