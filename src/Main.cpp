@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
     entry.dwSize = sizeof(PROCESSENTRY32);
     HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
 
-    char* recipyPathArg = argv[1];
+    char* recipePathArg = argv[1];
     char* exeArg = argv[2];
 
     wchar_t wExe[MAX_PATH];
@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
             SetForegroundWindow(targetWindow);
             SetFocus(targetWindow);
 
-            std::vector<Action*> actions = ActionsFactory::CreateActions(recipyPathArg);
+            std::vector<Action*> actions = ActionsFactory::CreateActions(recipePathArg);
             HoldKeyAction* hkAction = nullptr;
             for (auto& action : actions)
             {
