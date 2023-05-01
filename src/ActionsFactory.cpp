@@ -95,6 +95,13 @@ Actions ActionsFactory::ProcessLines(Lines& lines)
             int y = std::stoi(value.substr(find + 1));
             actions.emplace_back(new SetCursorPosAction(x, y));
         }
+        else if (key == ActionTypeName.moveCursorAction)
+        {
+            find = value.find(' ');
+            int x = std::stoi(value.substr(0, find));
+            int y = std::stoi(value.substr(find + 1));
+            actions.emplace_back(new MoveCursorAction(x, y));
+        }
         else if (key == ActionTypeName.mousceClickAction)
         {
             actions.emplace_back(new MouseClickAction(value));

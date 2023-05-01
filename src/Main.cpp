@@ -108,9 +108,15 @@ int main(int argc, char* argv[])
                 }
                 else if (action->type == ActionTypeName.setCursorPosAction)
                 {
-                    SetCursorPosAction* cursorAction = reinterpret_cast<SetCursorPosAction*>(action);
-                    cursorAction->Execute();
-                    delete cursorAction;
+                    SetCursorPosAction* scpAction = reinterpret_cast<SetCursorPosAction*>(action);
+                    scpAction->Execute();
+                    delete scpAction;
+                }
+                else if (action->type == ActionTypeName.moveCursorAction)
+                {
+                    MoveCursorAction* mcAction = reinterpret_cast<MoveCursorAction*>(action);
+                    mcAction->Execute();
+                    delete mcAction;
                 }
                 else if (action->type == ActionTypeName.mousceClickAction)
                 {

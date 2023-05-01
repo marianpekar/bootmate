@@ -10,7 +10,8 @@ static struct ActionTypeName
     const char* writeAction = "write";
     const char* pressAction = "press";
     const char* sleepAction = "sleep";
-    const char* setCursorPosAction = "cursor";
+    const char* setCursorPosAction = "cursor set";
+    const char* moveCursorAction = "cursor move";
     const char* mousceClickAction = "click";
     const char* mouseScrollAction = "scroll";
 
@@ -131,6 +132,20 @@ struct SetCursorPosAction : public Action
         SetCursorPos(x, y);
     }
 };
+
+struct MoveCursorAction : public Action
+{
+    int x, y;
+    MoveCursorAction(int x, int y) : Action(ActionTypeName.moveCursorAction), x(x), y(y) {}
+
+    void Execute() override
+    {
+        POINT currentPos;
+        GetCursorPos(&currentPos);
+        SetCursorPos(currentPos.x + x, currentPos.y + y);
+    }
+};
+
 
 struct MouseClickAction : public Action
 {
