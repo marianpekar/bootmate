@@ -55,12 +55,14 @@ Each command has to be places on a separate line.
 | write:{text} | Simply types a given text. Default delay between characters is 1 millisecond (see Bootmate.ini). | ```write:hello``` |
 | press:{key*} | Makes a single key press. | ```press:enter``` |
 | hold:{key*} | Holds a key until `release` is called or program ends. | ```hold:shift``` |
-| release:{key*} | Releases a key. If the is not currently held, nothing happens. | ```release:shift``` |
-| sleep:{ms} | Waits a given time in milliseconds. | ```sleep:500``` |
+| release:{key*} | Releases a key. If the key is not currently held, nothing happens. | ```release:shift``` |
 | set cursor:{x} {y} | Move cursor an absolute position (position [0,0] is the top left corner of the screen). | ```move:512 400``` |
 | move cursor:{x} {y} | Move cursor to a relative position. | ```move:0 10``` |
-| click:{left/middle/right} | Performs a left, middle, or right mouse button click. | ```click:left``` |
+| click:{left/middle/right} | Performs a left, middle, or right mouse button click. | ```click:right``` |
+| hold mouse:{left/middle/right} | Holds a mouse button until `release` is called or program ends. | ```hold mouse:left``` |
+| release mouse:{left/middle/right} | Releases a mouse button. If the button is not currently held, nothing happens. | ```release mouse:left``` |
 | scroll:{amount} | Rolls a mouse wheel. A positive number rolls up (forward), a negative rolls down (backward). | ```scroll:-120``` |
+| sleep:{ms} | Waits a given time in milliseconds. | ```sleep:500``` |
 | loop:{n} ... end | Repeats commands between `loop` and `end` n-times. | ```loop:10``` <br/>...<br/> ```end``` |
 
 *) See the list of keys
