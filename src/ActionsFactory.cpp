@@ -123,6 +123,21 @@ Actions ActionsFactory::ProcessLines(Lines& lines)
         {
             actions.emplace_back(new ReleaseMouseButtonAction(value));
         }
+        else if (key == ActionTypeName.run)
+        {
+            std::string exe, args;
+            if (value[0] == '\"') {
+                size_t end_quote = value.find('\"', 1);
+                exe = value.substr(1, end_quote - 1);
+                args = value.substr(end_quote + 1);
+            }
+            else {
+                size_t find = value.find(" ");
+                exe = value.substr(0, find);
+                args = value.substr(find + 1);
+            }
+            actions.emplace_back(new RunAction(exe, args));
+        }
     }
     return actions;
 }

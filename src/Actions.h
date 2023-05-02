@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include "ConfigLoader.h"
+#include "WinUtils.h"
 
 static struct ActionTypeName
 {
@@ -19,6 +20,7 @@ static struct ActionTypeName
     const char* mouseScroll = "scroll";
     const char* holdMouseButton = "hold mouse";
     const char* releaseMouseButton = "release mouse";
+    const char* run = "run";
 
 } ActionTypeName;
 
@@ -318,5 +320,23 @@ struct MouseScrollAction : public Action
         input.mi.dwFlags = MOUSEEVENTF_WHEEL;
         input.mi.mouseData = scrollValue;
         SendInput(1, &input, sizeof(INPUT));
+    }
+};
+
+struct RunAction : public Action
+{
+    std::string exe;
+    std::string args;
+
+    RunAction(std::string exe, std::string args) : Action(ActionTypeName.run), exe(exe), args(args) {}
+
+    void Execute() override
+    {
+        HWND targetWindow = WinUtils::RunExe(exe.c_str(), args);
+        if (targetWindow != NULL)
+        {
+            SetForegroundWindow(targetWindow);
+            SetFocus(targetWindow);
+        }
     }
 };

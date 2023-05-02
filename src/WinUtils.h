@@ -8,6 +8,6 @@ struct WinUtils
 {
 	static HWND FindTopWindow(const DWORD pid);
 	static HWND FindWindowByTitle(std::string title);
-	static HWND RunExe(char* exeArg, std::string subprocessCmdLineArgs);
+	static HWND RunExe(const char* exeArg, std::string subprocessCmdLineArgs);
 	static bool IsAppRunning(const HANDLE& snapshot, PROCESSENTRY32W& entry, wchar_t exeNameWide[MAX_PATH]);
 };

@@ -45,7 +45,7 @@ HWND WinUtils::FindWindowByTitle(std::string title)
     return FindWindow(NULL, wTitle.c_str());
 }
 
-HWND WinUtils::RunExe(char* exeArg, std::string subprocessCmdLineArgs)
+HWND WinUtils::RunExe(const char* exeArg, std::string subprocessCmdLineArgs)
 {
     wchar_t wExe[MAX_PATH];
     MultiByteToWideChar(CP_UTF8, 0, exeArg, -1, wExe, MAX_PATH);

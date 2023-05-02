@@ -79,6 +79,12 @@ void CookRecipe(char* recipePathArg)
             rmbAction->Execute();
             delete rmbAction;
         }
+        else if (action->type == ActionTypeName.run)
+        {
+            RunAction* runAction = reinterpret_cast<RunAction*>(action);
+            runAction->Execute();
+            delete runAction;
+        }
         Sleep(defaultDelay);
     }
 
