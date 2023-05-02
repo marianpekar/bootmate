@@ -4,7 +4,7 @@ Bootmate is a lightweight automation tool that accepts via command line argument
 
 Or you can run Bootmate with just a path to a recipe. In this case, no executable will be run and Bootmate starts performing the actions immediately.
 
-You can also run executables from a recipe itself, using a `run` command (see [Recipe Commands](#recipe-commands)).
+You can also run executables from a recipe itself, using a `run` command (see [All Recipe Commands](#all-recipe-commands)).
 
 ```
 Bootmate.exe [recipe] ([executable]) ([command-line arguments])
