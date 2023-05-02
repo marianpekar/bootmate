@@ -63,9 +63,15 @@ click:left
 ```
 which first sets the cursor position to x 512 and y 400 pixels, then moves along a square-shaped path clockwise and simulates a LMB click.
 
-On top of that, Bootmate is configurable by `bootmate.ini` you can but don't have to provide and both ini and recipe file support single-line comments prefixed with `;`.
+On top of that, Bootmate is configurable by `bootmate.ini` you can but don't have to provide, and both ini and recipe file support single-line comments prefixed with `;`. If you need a semicolon you need to escape it with a backtick.
 
-## Recipe Commands
+```
+var:name Bootname ;this is a comment
+name:Bootname`;this is NOT a comment
+```
+In this^ example, the value of the `name` variable has been re-assigned from `Bootname` to `Bootname;this is NOT a comment`
+
+## All Recipe Commands
 Each command has to be placed on a separate line. When a command accepts values, values are separated from the command with a `:`. Multiple values are separated from themselves by space.
 | Syntax | Description | Example |
 | - | - | - |
@@ -83,7 +89,7 @@ Each command has to be placed on a separate line. When a command accepts values,
 | loop:{n} ... end | Repeats commands between `loop` and `end` n-times. | ```loop:10``` <br/>...<br/> ```end``` |
 | run:{exe} ({args}) | Runs an executable, optionally with cmd line args. **If your path contains spaces or '`:`' wrap the path with `"`** | ```run:"C:\Program Files\My Precious App\MPA.exe"``` |
 | var:{name} ({value}) ** | Declares a variable. You can but don't have to initialize it. The default value is an empty string. | ```var:name Bootmate``` |
-| {name}:{value} ** | Re-assign a variable. Value can contain any character, including a space. | ```name:Boot Mate``` |
+| {name}:{value} ** | Re-assign a variable. Value can contain any character, including a space (semicolon needs to be escaped with a `` ` `` as everywhere where you don't want to mark the rest of a line as a comment). | ```name:Boot Mate``` |
 
 *) See the List of Keys
 
@@ -122,7 +128,7 @@ a — z
 ```
 
 ## Bootmate.ini
-Optional `Bootmate.ini` currently supports the following configuration pairs.
+Optional `Bootmate.ini` currently supports the following global configuration pairs.
 
 | Key | Description | Default Value |
 | - | - | - |
