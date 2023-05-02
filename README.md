@@ -59,8 +59,8 @@ Each command has to be placed on a separate line. When a command accepts values,
 | press:{key*} | Makes a single key press. | ```press:enter``` |
 | hold:{key*} | Holds a key until `release` is called or program ends. | ```hold:shift``` |
 | release:{key*} | Releases a key. If the key is not currently held, nothing happens. | ```release:shift``` |
-| set cursor:{x} {y} | Move cursor an absolute position (position [0,0] is the top left corner of the screen). | ```move:512 400``` |
-| move cursor:{x} {y} | Move cursor to a relative position. | ```move:0 10``` |
+| set cursor:{x} {y} | Move cursor an absolute position (position [0,0] is the top left corner of the screen). | ```set cursor:512 400``` |
+| move cursor:{x} {y} | Move cursor to a relative position. | ```move cursor:0 10``` |
 | click:{left/middle/right} | Performs a left, middle, or right mouse button click. | ```click:right``` |
 | hold mouse:{left/middle/right} | Holds a mouse button until `release mouse` is called or program ends. | ```hold mouse:left``` |
 | release mouse:{left/middle/right} | Releases a mouse button. If the button is not currently held, nothing happens. | ```release mouse:left``` |
