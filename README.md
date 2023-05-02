@@ -3,6 +3,9 @@
 Bootmate is a lightweight automation tool that accepts via command line arguments a recipe file, path to an executable with any command line arguments for this executable and then it runs the provided executable and performs actions from the recipe.
 
 Or you can run Bootmate with just a path to a recipe. In this case, no executable will be run and Bootmate starts performing the actions immediately.
+
+You can also run executables from a recipe itself, using a `run` command (see [Recipe Commands](#recipe-commands)).
+
 ```
 Bootmate.exe [recipe] ([executable]) ([command-line arguments])
 ```
@@ -49,7 +52,7 @@ which first sets the cursor position to x 512 and y 400 pixels, then moves along
 On top of that, Bootmate is configurable by `bootmate.ini` you can but don't have to provide and both ini and recipe file support single-line comments prefixed with `;`.
 
 ## Recipe Commands
-Each command has to be places on a separate line.
+Each command has to be placed on a separate line. When a command accepts values, values are separated from the command with a `:`. Multiple values are separated from themselves by space.
 | Syntax | Description | Example |
 | - | - | - |
 | write:{text} | Simply types a given text. Default delay between characters is 1 millisecond (see Bootmate.ini). | ```write:hello``` |
@@ -59,11 +62,12 @@ Each command has to be places on a separate line.
 | set cursor:{x} {y} | Move cursor an absolute position (position [0,0] is the top left corner of the screen). | ```move:512 400``` |
 | move cursor:{x} {y} | Move cursor to a relative position. | ```move:0 10``` |
 | click:{left/middle/right} | Performs a left, middle, or right mouse button click. | ```click:right``` |
-| hold mouse:{left/middle/right} | Holds a mouse button until `release` is called or program ends. | ```hold mouse:left``` |
+| hold mouse:{left/middle/right} | Holds a mouse button until `release mouse` is called or program ends. | ```hold mouse:left``` |
 | release mouse:{left/middle/right} | Releases a mouse button. If the button is not currently held, nothing happens. | ```release mouse:left``` |
 | scroll:{amount} | Rolls a mouse wheel. A positive number rolls up (forward), a negative rolls down (backward). | ```scroll:-120``` |
 | sleep:{ms} | Waits a given time in milliseconds. | ```sleep:500``` |
 | loop:{n} ... end | Repeats commands between `loop` and `end` n-times. | ```loop:10``` <br/>...<br/> ```end``` |
+| run:{exe} ({args}) | Runs an executable, optionally with cmd line args. **If your path contains spaces or '`:`' wrap the path with `"`** | ```run:"C:\Program Files\My Precious App\MPA.exe"``` |
 
 *) See the list of keys
 
