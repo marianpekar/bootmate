@@ -26,6 +26,7 @@ void CookRecipe(char* recipePathArg)
     int defaultDelay = ConfigLoader::HasElement("iDefaultDelay") ? std::stoi(ConfigLoader::ini["iDefaultDelay"]) : 1;
     std::vector<Action*> actions = ActionsFactory::CreateActions(recipePathArg);
     HoldKeyAction* hkAction = nullptr;
+    HoldMouseButtonAction* hmbAction = nullptr;
     for (auto& action : actions)
     {
         if (action->type == ActionTypeName.writeAction)
@@ -81,12 +82,28 @@ void CookRecipe(char* recipePathArg)
             scrollAction->Execute();
             delete scrollAction;
         }
+        else if (action->type == ActionTypeName.holdMouseButtonAction)
+        {
+            hmbAction = reinterpret_cast<HoldMouseButtonAction*>(action);
+            hmbAction->Execute();
+        }
+        else if (action->type == ActionTypeName.releaseMouseButtonAction)
+        {
+            ReleaseMouseButtonAction* rmbAction = reinterpret_cast<ReleaseMouseButtonAction*>(action);
+            rmbAction->Execute();
+            delete rmbAction;
+        }
         Sleep(defaultDelay);
     }
 
     if (hkAction != nullptr)
     {
         delete hkAction;
+    }
+
+    if (hmbAction != nullptr)
+    {
+        delete hmbAction;
     }
 }
 
@@ -101,10 +118,6 @@ int main(int argc, char* argv[])
     }
 
     char* recipePathArg = argv[1];
-
-    PROCESSENTRY32 entry;
-    entry.dwSize = sizeof(PROCESSENTRY32);
-    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
 
     if (argc < 3)
     {
@@ -137,6 +150,10 @@ int main(int argc, char* argv[])
 
     wchar_t wExeName[MAX_PATH];
     MultiByteToWideChar(CP_UTF8, 0, exeName.c_str(), -1, wExeName, MAX_PATH);
+
+    PROCESSENTRY32 entry;
+    entry.dwSize = sizeof(PROCESSENTRY32);
+    HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
 
     bool noMultipleInstances = ConfigLoader::HasElement("bNoMultipleInstances") ? (bool)std::stoi(ConfigLoader::ini["bNoMultipleInstances"]) : false;
     if (noMultipleInstances && WindowUtils::IsAppRunning(snapshot, entry, wExeName))

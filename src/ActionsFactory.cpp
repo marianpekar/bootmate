@@ -115,6 +115,14 @@ Actions ActionsFactory::ProcessLines(Lines& lines)
             DWORD scrollValue = std::stol(value);
             actions.emplace_back(new MouseScrollAction(scrollValue));
         }
+        else if (key == ActionTypeName.holdMouseButtonAction)
+        {
+            actions.emplace_back(new HoldMouseButtonAction(value));
+        }
+        else if (key == ActionTypeName.releaseMouseButtonAction)
+        {
+            actions.emplace_back(new ReleaseMouseButtonAction(value));
+        }
     }
     return actions;
 }

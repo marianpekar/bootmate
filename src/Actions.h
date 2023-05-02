@@ -17,6 +17,8 @@ static struct ActionTypeName
     const char* moveCursorAction = "move cursor";
     const char* mouseClickAction = "click";
     const char* mouseScrollAction = "scroll";
+    const char* holdMouseButtonAction = "hold mouse";
+    const char* releaseMouseButtonAction = "release mouse";
 
 } ActionTypeName;
 
@@ -232,24 +234,28 @@ struct MoveCursorAction : public Action
     }
 };
 
+static std::map<std::string, int> mouseUpEvents
+{
+    { MouseClickNames.left, MOUSEEVENTF_LEFTUP },
+    { MouseClickNames.middle, MOUSEEVENTF_MIDDLEUP },
+    { MouseClickNames.right, MOUSEEVENTF_RIGHTUP },
+};
+
+static std::map<std::string, int> mouseDownEvents
+{
+    { MouseClickNames.left, MOUSEEVENTF_LEFTDOWN },
+    { MouseClickNames.middle, MOUSEEVENTF_MIDDLEDOWN },
+    { MouseClickNames.right, MOUSEEVENTF_RIGHTDOWN },
+};
+
+
 struct MouseClickAction : public Action
 {
     DWORD dwFlags = 0;
 
     MouseClickAction(std::string mouseClickName) : Action(ActionTypeName.mouseClickAction)
-    {
-        if (mouseClickName == MouseClickNames.left)
-        {
-            dwFlags = MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP;
-        }
-        else if (mouseClickName == MouseClickNames.middle)
-        {
-            dwFlags = MOUSEEVENTF_MIDDLEDOWN | MOUSEEVENTF_MIDDLEUP;
-        }
-        else if (mouseClickName == MouseClickNames.right)
-        {
-            dwFlags = MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP;
-        }
+    {    
+        dwFlags = mouseDownEvents[mouseClickName] | mouseUpEvents[mouseClickName];
     }
 
     void Execute() override
@@ -258,6 +264,44 @@ struct MouseClickAction : public Action
         input.type = INPUT_MOUSE;
         input.mi.dwFlags = dwFlags;
         SendInput(1, &input, sizeof(INPUT));
+    }
+};
+
+struct ReleaseMouseButtonAction : public Action
+{
+    DWORD dwFlags = 0;
+
+    ReleaseMouseButtonAction(std::string mouseClickName) : Action(ActionTypeName.mouseClickAction)
+    {
+        dwFlags = mouseUpEvents[mouseClickName];
+    }
+
+    void Execute() override
+    {
+        INPUT input{ 0 };
+        input.type = INPUT_MOUSE;
+        input.mi.dwFlags = dwFlags;
+        SendInput(1, &input, sizeof(INPUT));
+    }
+};
+
+struct HoldMouseButtonAction : public Action
+{
+    std::string mouseClickName;
+
+    HoldMouseButtonAction(std::string mouseClickName) : Action(ActionTypeName.mouseClickAction), mouseClickName(mouseClickName) {}
+
+    void Execute() override
+    {
+        INPUT input{ 0 };
+        input.type = INPUT_MOUSE;
+        input.mi.dwFlags = mouseDownEvents[mouseClickName];
+        SendInput(1, &input, sizeof(INPUT));
+    }
+
+    ~HoldMouseButtonAction()
+    {
+        ReleaseMouseButtonAction(mouseClickName).Execute();
     }
 };
 
