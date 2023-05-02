@@ -14,8 +14,19 @@ void ConfigLoader::LoadIniFile(const std::string filename)
         while (getline(file, line))
         {
             size_t comment = line.find(';');
-            if (comment != std::string::npos)
-                line = line.substr(0, comment);
+            while (comment != std::string::npos)
+            {
+                if (comment > 0 && line[comment - 1] == '`')
+                {
+                    line.replace(comment - 1, 2, ";");
+                }
+                else
+                {
+                    line = line.substr(0, comment);
+                    break;
+                }
+                comment = line.find(';', comment + 1);
+            }
 
             line.erase(0, line.find_first_not_of(" \t\n\r\f\v"));
             line.erase(line.find_last_not_of(" \t\n\r\f\v") + 1);
