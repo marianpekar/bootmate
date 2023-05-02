@@ -4,7 +4,7 @@
 #include <tlhelp32.h>
 #include <string>
 
-struct WindowUtils
+struct WinUtils
 {
 	static HWND FindTopWindow(const DWORD pid);
 	static HWND FindWindowByTitle(std::string title);

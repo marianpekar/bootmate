@@ -5,7 +5,7 @@
 #include "Actions.h"
 #include "ActionsFactory.h"
 #include "ConfigLoader.h"
-#include "WindowUtils.h"
+#include "WinUtils.h"
 
 std::string CreateSubprocessCmdLineArgs(int argc, char* argv[])
 {
@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
     {
         if (ConfigLoader::HasElement("bFindWindowByTitle") && std::stoi(ConfigLoader::ini["bFindWindowByTitle"]) == 1)
         {   
-            HWND targetWindow = WindowUtils::FindWindowByTitle(ConfigLoader::ini["sWindowTitle"]);
+            HWND targetWindow = WinUtils::FindWindowByTitle(ConfigLoader::ini["sWindowTitle"]);
             if (targetWindow != NULL)
             {
                 SetForegroundWindow(targetWindow);
@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
     char* exeArg = argv[2];
     std::string subprocessCmdLineArgs = CreateSubprocessCmdLineArgs(argc, argv);
 
-    HWND targetWindow = WindowUtils::RunExe(exeArg, subprocessCmdLineArgs);
+    HWND targetWindow = WinUtils::RunExe(exeArg, subprocessCmdLineArgs);
     if (targetWindow != NULL)
     {
         SetForegroundWindow(targetWindow);

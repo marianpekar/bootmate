@@ -2,10 +2,10 @@
 #include <utility>
 #include <string>
 #include <algorithm>
-#include "WindowUtils.h"
+#include "WinUtils.h"
 #include "ConfigLoader.h"
 
-HWND WindowUtils::FindTopWindow(const DWORD pid)
+HWND WinUtils::FindTopWindow(const DWORD pid)
 {
     std::pair<HWND, DWORD> params = { 0, pid };
     BOOL result = EnumWindows([](HWND hwnd, LPARAM lParam) -> BOOL {
@@ -27,7 +27,7 @@ HWND WindowUtils::FindTopWindow(const DWORD pid)
     return 0;
 }
 
-bool WindowUtils::IsAppRunning(const HANDLE& snapshot, PROCESSENTRY32W& entry, wchar_t exeNameWide[MAX_PATH])
+bool WinUtils::IsAppRunning(const HANDLE& snapshot, PROCESSENTRY32W& entry, wchar_t exeNameWide[MAX_PATH])
 {
     while (Process32Next(snapshot, &entry) == TRUE)
     {
@@ -39,13 +39,13 @@ bool WindowUtils::IsAppRunning(const HANDLE& snapshot, PROCESSENTRY32W& entry, w
     return false;
 }
 
-HWND WindowUtils::FindWindowByTitle(std::string title)
+HWND WinUtils::FindWindowByTitle(std::string title)
 {
     std::wstring wTitle(title.begin(), title.end());
     return FindWindow(NULL, wTitle.c_str());
 }
 
-HWND WindowUtils::RunExe(char* exeArg, std::string subprocessCmdLineArgs)
+HWND WinUtils::RunExe(char* exeArg, std::string subprocessCmdLineArgs)
 {
     wchar_t wExe[MAX_PATH];
     MultiByteToWideChar(CP_UTF8, 0, exeArg, -1, wExe, MAX_PATH);
@@ -63,7 +63,7 @@ HWND WindowUtils::RunExe(char* exeArg, std::string subprocessCmdLineArgs)
     HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
 
     bool noMultipleInstances = ConfigLoader::HasElement("bNoMultipleInstances") ? (bool)std::stoi(ConfigLoader::ini["bNoMultipleInstances"]) : false;
-    if (noMultipleInstances && WindowUtils::IsAppRunning(snapshot, entry, wExeName))
+    if (noMultipleInstances && IsAppRunning(snapshot, entry, wExeName))
     {
         std::cout << exeName << " is already running and bNoMultipleInstances=1" << std::endl;
         return 0;
@@ -93,9 +93,7 @@ HWND WindowUtils::RunExe(char* exeArg, std::string subprocessCmdLineArgs)
         CloseHandle(snapshot);
 
         OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processID);
-        HWND targetWindow = ConfigLoader::HasElement("bFindWindowByTitle") && std::stoi(ConfigLoader::ini["bFindWindowByTitle"]) == 1 ?
-            WindowUtils::FindWindowByTitle(ConfigLoader::ini["sWindowTitle"]) :
-            WindowUtils::FindTopWindow(processID);
+        HWND targetWindow = ConfigLoader::HasElement("bFindWindowByTitle") && std::stoi(ConfigLoader::ini["bFindWindowByTitle"]) == 1 ? FindWindowByTitle(ConfigLoader::ini["sWindowTitle"]) :FindTopWindow(processID);
 
         CloseHandle(pi.hThread);
         CloseHandle(pi.hProcess);
