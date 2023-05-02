@@ -8,17 +8,17 @@
 
 static struct ActionTypeName
 {
-    const char* writeAction = "write";
-    const char* pressAction = "press";
-    const char* holdAction = "hold";
-    const char* releaseAction = "release";
-    const char* sleepAction = "sleep";
-    const char* setCursorPosAction = "set cursor";
-    const char* moveCursorAction = "move cursor";
-    const char* mouseClickAction = "click";
-    const char* mouseScrollAction = "scroll";
-    const char* holdMouseButtonAction = "hold mouse";
-    const char* releaseMouseButtonAction = "release mouse";
+    const char* write = "write";
+    const char* press = "press";
+    const char* hold = "hold";
+    const char* release = "release";
+    const char* sleep = "sleep";
+    const char* setCursorPos = "set cursor";
+    const char* moveCursor = "move cursor";
+    const char* mouseClick = "click";
+    const char* mouseScroll = "scroll";
+    const char* holdMouseButton = "hold mouse";
+    const char* releaseMouseButton = "release mouse";
 
 } ActionTypeName;
 
@@ -41,7 +41,7 @@ struct WriteAction : public Action
 {
     const std::wstring chars;
     const DWORD delay;
-    WriteAction(const std::wstring chars) : Action(ActionTypeName.writeAction), chars(chars), 
+    WriteAction(const std::wstring chars) : Action(ActionTypeName.write), chars(chars), 
         delay(ConfigLoader::HasElement("iDefaultWriteDelay") ? std::stoi(ConfigLoader::ini["iDefaultWriteDelay"]) : 1) {}
     
     void Execute() override
@@ -153,7 +153,7 @@ static std::map<std::string, int> virtualKeys {
 struct PressKeyAction : public Action
 {
     std::string keyName;
-    PressKeyAction(std::string keyName) : Action(ActionTypeName.pressAction), keyName(keyName) {}
+    PressKeyAction(std::string keyName) : Action(ActionTypeName.press), keyName(keyName) {}
 
     void Execute() override
     {
@@ -167,7 +167,7 @@ struct PressKeyAction : public Action
 struct ReleaseKeyAction : public Action
 {
     std::string keyName;
-    ReleaseKeyAction(std::string keyName) : Action(ActionTypeName.releaseAction), keyName(keyName) {}
+    ReleaseKeyAction(std::string keyName) : Action(ActionTypeName.release), keyName(keyName) {}
 
     void Execute() override
     {
@@ -182,7 +182,7 @@ struct ReleaseKeyAction : public Action
 struct HoldKeyAction : public Action
 {
     std::string keyName;
-    HoldKeyAction(std::string keyName) : Action(ActionTypeName.holdAction), keyName(keyName) {}
+    HoldKeyAction(std::string keyName) : Action(ActionTypeName.hold), keyName(keyName) {}
 
     void Execute() override
     {
@@ -202,7 +202,7 @@ struct HoldKeyAction : public Action
 struct SleepAction : public Action
 {
     DWORD ms;
-    SleepAction(DWORD ms) : Action(ActionTypeName.sleepAction), ms(ms) {}
+    SleepAction(DWORD ms) : Action(ActionTypeName.sleep), ms(ms) {}
 
     void Execute() override
     {
@@ -213,7 +213,7 @@ struct SleepAction : public Action
 struct SetCursorPosAction : public Action
 {
     int x, y;
-    SetCursorPosAction(int x, int y) : Action(ActionTypeName.setCursorPosAction), x(x), y(y) {}
+    SetCursorPosAction(int x, int y) : Action(ActionTypeName.setCursorPos), x(x), y(y) {}
 
     void Execute() override
     {
@@ -224,7 +224,7 @@ struct SetCursorPosAction : public Action
 struct MoveCursorAction : public Action
 {
     int x, y;
-    MoveCursorAction(int x, int y) : Action(ActionTypeName.moveCursorAction), x(x), y(y) {}
+    MoveCursorAction(int x, int y) : Action(ActionTypeName.moveCursor), x(x), y(y) {}
 
     void Execute() override
     {
@@ -253,7 +253,7 @@ struct MouseClickAction : public Action
 {
     DWORD dwFlags = 0;
 
-    MouseClickAction(std::string mouseClickName) : Action(ActionTypeName.mouseClickAction)
+    MouseClickAction(std::string mouseClickName) : Action(ActionTypeName.mouseClick)
     {    
         dwFlags = mouseDownEvents[mouseClickName] | mouseUpEvents[mouseClickName];
     }
@@ -271,7 +271,7 @@ struct ReleaseMouseButtonAction : public Action
 {
     DWORD dwFlags = 0;
 
-    ReleaseMouseButtonAction(std::string mouseClickName) : Action(ActionTypeName.mouseClickAction)
+    ReleaseMouseButtonAction(std::string mouseClickName) : Action(ActionTypeName.releaseMouseButton)
     {
         dwFlags = mouseUpEvents[mouseClickName];
     }
@@ -289,7 +289,7 @@ struct HoldMouseButtonAction : public Action
 {
     std::string mouseClickName;
 
-    HoldMouseButtonAction(std::string mouseClickName) : Action(ActionTypeName.mouseClickAction), mouseClickName(mouseClickName) {}
+    HoldMouseButtonAction(std::string mouseClickName) : Action(ActionTypeName.holdMouseButton), mouseClickName(mouseClickName) {}
 
     void Execute() override
     {
@@ -309,7 +309,7 @@ struct MouseScrollAction : public Action
 {
     DWORD scrollValue;
     
-    MouseScrollAction(DWORD scrollValue) : Action(ActionTypeName.mouseScrollAction), scrollValue(scrollValue) {}
+    MouseScrollAction(DWORD scrollValue) : Action(ActionTypeName.mouseScroll), scrollValue(scrollValue) {}
 
     void Execute() override
     {

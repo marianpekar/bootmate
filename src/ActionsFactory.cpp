@@ -70,56 +70,56 @@ Actions ActionsFactory::ProcessLines(Lines& lines)
             loopBeginIdx = i + 1;
             loopCount = std::stoi(value);
         }
-        else if (key == ActionTypeName.writeAction)
+        else if (key == ActionTypeName.write)
         {
             std::wstring chars(value.begin(), value.end());
             actions.emplace_back(new WriteAction(chars));
         }
-        else if (key == ActionTypeName.pressAction)
+        else if (key == ActionTypeName.press)
         {
             actions.emplace_back(new PressKeyAction(value));
         }
-        else if (key == ActionTypeName.holdAction)
+        else if (key == ActionTypeName.hold)
         {
             actions.emplace_back(new HoldKeyAction(value));
         }
-        else if (key == ActionTypeName.releaseAction)
+        else if (key == ActionTypeName.release)
         {
             actions.emplace_back(new ReleaseKeyAction(value));
         }
-        else if (key == ActionTypeName.sleepAction)
+        else if (key == ActionTypeName.sleep)
         {
             DWORD ms = std::stoul(value);
             actions.emplace_back(new SleepAction(ms));
         }
-        else if (key == ActionTypeName.setCursorPosAction)
+        else if (key == ActionTypeName.setCursorPos)
         {
             find = value.find(' ');
             int x = std::stoi(value.substr(0, find));
             int y = std::stoi(value.substr(find + 1));
             actions.emplace_back(new SetCursorPosAction(x, y));
         }
-        else if (key == ActionTypeName.moveCursorAction)
+        else if (key == ActionTypeName.moveCursor)
         {
             find = value.find(' ');
             int x = std::stoi(value.substr(0, find));
             int y = std::stoi(value.substr(find + 1));
             actions.emplace_back(new MoveCursorAction(x, y));
         }
-        else if (key == ActionTypeName.mouseClickAction)
+        else if (key == ActionTypeName.mouseClick)
         {
             actions.emplace_back(new MouseClickAction(value));
         }
-        else if (key == ActionTypeName.mouseScrollAction)
+        else if (key == ActionTypeName.mouseScroll)
         {
             DWORD scrollValue = std::stol(value);
             actions.emplace_back(new MouseScrollAction(scrollValue));
         }
-        else if (key == ActionTypeName.holdMouseButtonAction)
+        else if (key == ActionTypeName.holdMouseButton)
         {
             actions.emplace_back(new HoldMouseButtonAction(value));
         }
-        else if (key == ActionTypeName.releaseMouseButtonAction)
+        else if (key == ActionTypeName.releaseMouseButton)
         {
             actions.emplace_back(new ReleaseMouseButtonAction(value));
         }

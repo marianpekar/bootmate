@@ -7,16 +7,6 @@
 #include "ConfigLoader.h"
 #include "WinUtils.h"
 
-std::string CreateSubprocessCmdLineArgs(int argc, char* argv[])
-{
-    std::stringstream ss;
-    for (size_t i = 3; i < argc; ++i)
-    {
-        ss << " " << argv[i];
-    }
-    return ss.str();
-}
-
 void CookRecipe(char* recipePathArg)
 {
     int defaultDelay = ConfigLoader::HasElement("iDefaultDelay") ? std::stoi(ConfigLoader::ini["iDefaultDelay"]) : 1;
@@ -25,65 +15,65 @@ void CookRecipe(char* recipePathArg)
     HoldMouseButtonAction* hmbAction = nullptr;
     for (auto& action : actions)
     {
-        if (action->type == ActionTypeName.writeAction)
+        if (action->type == ActionTypeName.write)
         {
             WriteAction* wAction = reinterpret_cast<WriteAction*>(action);
             wAction->Execute();
             delete wAction;
         }
-        else if (action->type == ActionTypeName.pressAction)
+        else if (action->type == ActionTypeName.press)
         {
             PressKeyAction* pkAction = reinterpret_cast<PressKeyAction*>(action);
             pkAction->Execute();
             delete pkAction;
         }
-        else if (action->type == ActionTypeName.holdAction)
+        else if (action->type == ActionTypeName.hold)
         {
             hkAction = reinterpret_cast<HoldKeyAction*>(action);
             hkAction->Execute();
         }
-        else if (action->type == ActionTypeName.releaseAction)
+        else if (action->type == ActionTypeName.release)
         {
             ReleaseKeyAction* rkAction = reinterpret_cast<ReleaseKeyAction*>(action);
             rkAction->Execute();
             delete rkAction;
         }
-        else if (action->type == ActionTypeName.sleepAction)
+        else if (action->type == ActionTypeName.sleep)
         {
             SleepAction* sleepAction = reinterpret_cast<SleepAction*>(action);
             sleepAction->Execute();
             delete sleepAction;
         }
-        else if (action->type == ActionTypeName.setCursorPosAction)
+        else if (action->type == ActionTypeName.setCursorPos)
         {
             SetCursorPosAction* scpAction = reinterpret_cast<SetCursorPosAction*>(action);
             scpAction->Execute();
             delete scpAction;
         }
-        else if (action->type == ActionTypeName.moveCursorAction)
+        else if (action->type == ActionTypeName.moveCursor)
         {
             MoveCursorAction* mcAction = reinterpret_cast<MoveCursorAction*>(action);
             mcAction->Execute();
             delete mcAction;
         }
-        else if (action->type == ActionTypeName.mouseClickAction)
+        else if (action->type == ActionTypeName.mouseClick)
         {
             MouseClickAction* clickAction = reinterpret_cast<MouseClickAction*>(action);
             clickAction->Execute();
             delete clickAction;
         }
-        else if (action->type == ActionTypeName.mouseScrollAction)
+        else if (action->type == ActionTypeName.mouseScroll)
         {
             MouseScrollAction* scrollAction = reinterpret_cast<MouseScrollAction*>(action);
             scrollAction->Execute();
             delete scrollAction;
         }
-        else if (action->type == ActionTypeName.holdMouseButtonAction)
+        else if (action->type == ActionTypeName.holdMouseButton)
         {
             hmbAction = reinterpret_cast<HoldMouseButtonAction*>(action);
             hmbAction->Execute();
         }
-        else if (action->type == ActionTypeName.releaseMouseButtonAction)
+        else if (action->type == ActionTypeName.releaseMouseButton)
         {
             ReleaseMouseButtonAction* rmbAction = reinterpret_cast<ReleaseMouseButtonAction*>(action);
             rmbAction->Execute();
@@ -101,6 +91,16 @@ void CookRecipe(char* recipePathArg)
     {
         delete hmbAction;
     }
+}
+
+std::string CreateSubprocessCmdLineArgs(int argc, char* argv[])
+{
+    std::stringstream ss;
+    for (size_t i = 3; i < argc; ++i)
+    {
+        ss << " " << argv[i];
+    }
+    return ss.str();
 }
 
 int main(int argc, char* argv[])
