@@ -15,30 +15,30 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="../src/main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\ActionsFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\ConfigLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\WindowUtils.cpp">
+    <ClCompile Include="..\src\WinUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="../src/Actions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\ActionsFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\ConfigLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\WindowUtils.h">
+    <ClInclude Include="..\src\WinUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Actions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
