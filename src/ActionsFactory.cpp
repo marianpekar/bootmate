@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 #include "Actions.h"
 #include "ActionsFactory.h"
 
@@ -126,16 +127,27 @@ Actions ActionsFactory::ProcessLines(Lines& lines)
         else if (key == ActionTypeName.run)
         {
             std::string exe, args;
-            if (value[0] == '\"') {
+            if (value[0] == '\"') 
+            {
                 size_t end_quote = value.find('\"', 1);
                 exe = value.substr(1, end_quote - 1);
                 args = value.substr(end_quote + 1);
             }
-            else {
+            else 
+            {
                 size_t find = value.find(" ");
                 exe = value.substr(0, find);
                 args = value.substr(find + 1);
             }
+
+            std::filesystem::path exePath(exe);
+            if (!exePath.is_absolute()) 
+            {
+                std::filesystem::path cwd = std::filesystem::current_path();
+                exePath = cwd / exePath;
+                exe = exePath.string();
+            }
+
             actions.emplace_back(new RunAction(exe, args));
         }
     }

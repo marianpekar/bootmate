@@ -105,6 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,13 +132,13 @@
     <ClCompile Include="..\src\Main.cpp" />
     <ClCompile Include="..\src\ActionsFactory.cpp" />
     <ClCompile Include="..\src\ConfigLoader.cpp" />
-    <ClCompile Include="..\src\WindowUtils.cpp" />
+    <ClCompile Include="..\src\WinUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Actions.h" />
     <ClInclude Include="..\src\ActionsFactory.h" />
     <ClInclude Include="..\src\ConfigLoader.h" />
-    <ClInclude Include="..\src\WindowUtils.h" />
+    <ClInclude Include="..\src\WinUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
