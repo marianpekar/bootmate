@@ -1,14 +1,26 @@
+var:name Bootmate
+var:half_second 500
+
 loop:2
 write:Knock...
 press:enter
 end
+
 write:Who's there?
 sleep:1000
 press:enter
-write:It's Bootmate!
+write:It's $name!
+sleep:$half_second
+press:enter
+write:Boot, who?
+name:Boot Mate
+sleep:$half_second
+press:enter
+write:$name!
+
 hold:ctrl
 press:s
 release:ctrl
-sleep:500
+sleep:1000
 write:kkjk.txt
 press:enter

@@ -45,6 +45,7 @@ Lines ActionsFactory::LoadLines(const std::string& filename)
 
 int ActionsFactory::loopCount = 0;
 int ActionsFactory::loopBeginIdx = 0;
+Variables ActionsFactory::vars;
 Actions ActionsFactory::ProcessLines(Lines& lines)
 {
     Actions actions;
@@ -66,8 +67,37 @@ Actions ActionsFactory::ProcessLines(Lines& lines)
         std::string key = line.substr(0, find);
         std::string value = line.substr(find + 1);
 
+        if (key == "var")
+        {
+            size_t findEqual = value.find(' ');
+            if (findEqual != std::string::npos)
+            {
+                std::string varName = value.substr(0, findEqual);
+                std::string varvalue = value.substr(findEqual + 1);
+                vars[varName] = varvalue;
+            }
+            else
+            {
+                vars[value] = "";
+            }
+        }
+
+        for (auto& var : vars)
+        {
+            if (key == var.first)
+            {
+                vars[key] = value;
+            }
+
+            size_t varFind = 0;
+            while ((varFind = value.find("$" + var.first, varFind)) != std::string::npos) {
+                value.replace(varFind, std::string("$" + var.first).length(), var.second);
+                varFind += var.second.length();
+            }
+        }
+
         if (key == "loop")
-        {   
+        {
             loopBeginIdx = i + 1;
             loopCount = std::stoi(value);
         }

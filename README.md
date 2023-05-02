@@ -12,18 +12,30 @@ Bootmate.exe [recipe] ([executable]) ([command-line arguments])
 
 A recipe file might look like this:
 ```
+var:name Bootmate
+var:half_second 500
+
 loop:2
 write:Knock...
 press:enter
 end
+
 write:Who's there?
 sleep:1000
 press:enter
-write:It's Bootmate!
+write:It's $name!
+sleep:$half_second
+press:enter
+write:Boot, who?
+name:Boot Mate
+sleep:$half_second
+press:enter
+write:$name!
+
 hold:ctrl
 press:s
 release:ctrl
-sleep:500
+sleep:1000
 write:kkjk.txt
 press:enter
 ```
@@ -37,11 +49,13 @@ Knock...
 Knock...
 Who's there?
 It's Bootmate!
+Boot, who?
+Boot Mate!
 ````
-In the example you can see the use of `loop`, `write`, `sleep`, `press`, `hold`, and `release` commands, but there are also commands to drive the mouse, like in this example:
+In the example you can see the use of `loop`, `write`, `sleep`, `press`, `hold`, and `release` commands and how to declare and initialize and also re-assign and use `var`iables, but there are also commands to drive a mouse, like in this example:
 ```
 set cursor:512 400
-move cursor:100 0
+move cursor:100 0 ;follow a square path
 move cursor:0 100
 move cursor:-100 0
 move cursor:0 -100
@@ -68,9 +82,13 @@ Each command has to be placed on a separate line. When a command accepts values,
 | sleep:{ms} | Waits a given time in milliseconds. | ```sleep:500``` |
 | loop:{n} ... end | Repeats commands between `loop` and `end` n-times. | ```loop:10``` <br/>...<br/> ```end``` |
 | run:{exe} ({args}) | Runs an executable, optionally with cmd line args. **If your path contains spaces or '`:`' wrap the path with `"`** | ```run:"C:\Program Files\My Precious App\MPA.exe"``` |
+| var:{name} ({value}) ** | Declares a variable. You can but don't have to initialize it. The default value is an empty string. | ```var:name Bootmate``` |
+| {name}:{value} ** | Re-assign a variable. Value can contain any character, including a space. | ```name:Boot Mate``` |
 
-*) See the list of keys
+*) See the List of Keys
 
+**) Use variables in values of any command by prefixing its name with a `$` (e.g. `$name`) 
+ 
 ## List of Keys
 Some virtual keys have two options (the second option is in brackets)
 ```
