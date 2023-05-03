@@ -13,8 +13,9 @@ public:
 	static Actions CreateActions(const std::string& filename);
 private:
 	static int loopCount;
-	static int loopBeginIdx;
+	static size_t loopBeginIdx;
 	static Variables vars;
 	static Lines LoadLines(const std::string& filename);
 	static Actions ProcessLines(Lines& lines);
+	static void EvaluateExpressions(std::string& value);
 };

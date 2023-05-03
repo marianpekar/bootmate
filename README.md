@@ -21,7 +21,7 @@ press:enter
 end
 
 write:Who's there?
-sleep:1000
+sleep:${$half_second*2}
 press:enter
 write:It's $name!
 sleep:$half_second
@@ -35,7 +35,7 @@ write:$name!
 hold:ctrl
 press:s
 release:ctrl
-sleep:1000
+sleep:1200
 write:kkjk.txt
 press:enter
 ```
@@ -52,16 +52,17 @@ It's Bootmate!
 Boot, who?
 Boot Mate!
 ````
-In the example you can see the use of `loop`, `write`, `sleep`, `press`, `hold`, and `release` commands and how to declare and initialize and also re-assign and use `var`iables, but there are also commands to drive a mouse, like in this example:
+In the example you can see a usage of `loop`, `write`, `sleep`, `press`, `hold`, and `release` commands, but also `var`iables and [Expressions](#expressions). There are also commands to drive a mouse, like in this example:
 ```
 set cursor:512 400
-move cursor:100 0 ;follow a square path
-move cursor:0 100
-move cursor:-100 0
-move cursor:0 -100
+var:size 100
+move cursor:$size 0
+move cursor:0 $size
+move cursor:${-$size} 0
+move cursor:0 ${-$size}
 click:left
 ```
-which first sets the cursor position to x 512 and y 400 pixels, then moves along a square-shaped path clockwise and simulates a LMB click.
+This first sets the cursor position to x 512 and y 400 pixels, then moves it along a square-shaped path clockwise and simulates a LMB click.
 
 On top of that, Bootmate is configurable by `bootmate.ini` you can but don't have to provide, and both ini and recipe file support single-line comments prefixed with `;`. If you need a semicolon you need to escape it with a backtick.
 
@@ -91,10 +92,36 @@ Each command has to be placed on a separate line. When a command accepts values,
 | var:{name} ({value}) ** | Declares a variable. You can but don't have to initialize it. The default value is an empty string. | ```var:name Bootmate``` |
 | {name}:{value} ** | Re-assign a variable. Value can contain any character, including a space (semicolon needs to be escaped with a `` ` `` as everywhere where you don't want to mark the rest of a line as a comment). | ```name:Boot Mate``` |
 
-*) See the List of Keys
+*) See the [List of Keys](#list-of-keys)
 
-**) Use variables in values of any command by prefixing its name with a `$` (e.g. `$name`) 
- 
+**) Use variables in values of any command by prefixing its name with a `$` (e.g. `$name`)
+
+## Expressions
+
+You can also use basic mathematical expressions (supported operators are `()`, `%`, `^`, `*`, `/`, `+`, and `-`) in any value, an expression has to start with `${` and ends with `}`. Here are some examples:
+
+```
+write:${2+4*2} is smaller than ${(2+4)*2} and ${(2+4)*-2} is a negative number.
+write: Two to the power of four is ${2^4}.
+```
+Writes `10 is smaller than 12 and -12 is a negative number. Two to the power of four is 16.`
+
+```
+var:pi 3.141592
+var:tau ${$pi*2}
+write:$tau is twice as large as $pi
+```
+Writes `6.283184 is twice as large as 3.141592`
+```
+var:n ${2+4*2} 
+n:${$n/2}
+loop:${$n+1}
+write:${$n*2} divided by 2 is $n
+press:enter
+end
+```
+ Writes 6 lines of `10 divided by 2 is 5`
+
 ## List of Keys
 Some virtual keys have two options (the second option is in brackets)
 ```

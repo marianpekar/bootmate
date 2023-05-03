@@ -1,8 +1,12 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <sstream>
+#include <iomanip>
 #include "Actions.h"
 #include "ActionsFactory.h"
+#include "Expressions/Parser.h"
+#include "Expressions/Tokenizer.h"
 
 std::vector<struct Action*> ActionsFactory::CreateActions(const std::string& filename)
 {
@@ -54,7 +58,7 @@ Lines ActionsFactory::LoadLines(const std::string& filename)
 }
 
 int ActionsFactory::loopCount = 0;
-int ActionsFactory::loopBeginIdx = 0;
+size_t ActionsFactory::loopBeginIdx = 0;
 Variables ActionsFactory::vars;
 Actions ActionsFactory::ProcessLines(Lines& lines)
 {
@@ -77,20 +81,16 @@ Actions ActionsFactory::ProcessLines(Lines& lines)
         std::string key = line.substr(0, find);
         std::string value = line.substr(find + 1);
 
-        if (key == "var")
+        for (auto& var : vars)
         {
-            size_t findEqual = value.find(' ');
-            if (findEqual != std::string::npos)
-            {
-                std::string varName = value.substr(0, findEqual);
-                std::string varvalue = value.substr(findEqual + 1);
-                vars[varName] = varvalue;
-            }
-            else
-            {
-                vars[value] = "";
+            size_t varFind = 0;
+            while ((varFind = value.find("$" + var.first, varFind)) != std::string::npos) {
+                value.replace(varFind, std::string("$" + var.first).length(), var.second);
+                varFind += var.second.length();
             }
         }
+
+        EvaluateExpressions(value);
 
         for (auto& var : vars)
         {
@@ -98,11 +98,20 @@ Actions ActionsFactory::ProcessLines(Lines& lines)
             {
                 vars[key] = value;
             }
+        }
 
-            size_t varFind = 0;
-            while ((varFind = value.find("$" + var.first, varFind)) != std::string::npos) {
-                value.replace(varFind, std::string("$" + var.first).length(), var.second);
-                varFind += var.second.length();
+        if (key == "var")
+        {
+            size_t findEqual = value.find(' ');
+            if (findEqual != std::string::npos)
+            {
+                std::string varName = value.substr(0, findEqual);
+                std::string varValue = value.substr(findEqual + 1);
+                vars[varName] = varValue;
+            }
+            else
+            {
+                vars[value] = "";
             }
         }
 
@@ -113,8 +122,7 @@ Actions ActionsFactory::ProcessLines(Lines& lines)
         }
         else if (key == ActionTypeName.write)
         {
-            std::wstring chars(value.begin(), value.end());
-            actions.emplace_back(new WriteAction(chars));
+            actions.emplace_back(new WriteAction(value));
         }
         else if (key == ActionTypeName.press)
         {
@@ -192,4 +200,27 @@ Actions ActionsFactory::ProcessLines(Lines& lines)
         }
     }
     return actions;
+}
+
+void ActionsFactory::EvaluateExpressions(std::string& value)
+{
+    std::string leftTag = "${";
+    std::string rightTag = "}";
+    size_t startPos = 0;
+    while ((startPos = value.find(leftTag, startPos)) != std::string::npos) 
+    {
+        startPos += leftTag.size();
+        size_t endPos = value.find(rightTag, startPos);
+        std::string expr = value.substr(startPos, endPos - startPos);
+
+        Tokens tokens = Tokenizer::Tokenize(expr);
+        Parser parser(tokens);
+        double result = parser.Parse()->Evaluate();
+
+        std::ostringstream oss;
+        oss << std::setprecision(8) << std::noshowpoint << result;
+
+        value.replace(startPos - leftTag.size(), endPos + rightTag.size() - startPos + leftTag.size(), oss.str());
+        startPos = startPos - leftTag.size() + oss.str().size() + rightTag.size();
+    }
 }

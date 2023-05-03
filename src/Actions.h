@@ -41,9 +41,9 @@ struct Action
 
 struct WriteAction : public Action
 {
-    const std::wstring chars;
+    const std::string chars;
     const DWORD delay;
-    WriteAction(const std::wstring chars) : Action(ActionTypeName.write), chars(chars), 
+    WriteAction(const std::string chars) : Action(ActionTypeName.write), chars(chars),
         delay(ConfigLoader::HasElement("iDefaultWriteDelay") ? std::stoi(ConfigLoader::ini["iDefaultWriteDelay"]) : 1) {}
     
     void Execute() override

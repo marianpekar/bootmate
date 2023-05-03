@@ -129,15 +129,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\Expressions\Tokenizer.cpp" />
     <ClCompile Include="..\src\Main.cpp" />
     <ClCompile Include="..\src\ActionsFactory.cpp" />
     <ClCompile Include="..\src\ConfigLoader.cpp" />
+    <ClCompile Include="..\src\Expressions\Node.cpp" />
+    <ClCompile Include="..\src\Expressions\Parser.cpp" />
     <ClCompile Include="..\src\WinUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Actions.h" />
     <ClInclude Include="..\src\ActionsFactory.h" />
     <ClInclude Include="..\src\ConfigLoader.h" />
+    <ClInclude Include="..\src\Expressions\Node.h" />
+    <ClInclude Include="..\src\Expressions\Parser.h" />
+    <ClInclude Include="..\src\Expressions\Tokenizer.h" />
     <ClInclude Include="..\src\WinUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

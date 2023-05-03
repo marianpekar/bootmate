@@ -7,7 +7,7 @@ press:enter
 end
 
 write:Who's there?
-sleep:1000
+sleep:${$half_second*2}
 press:enter
 write:It's $name!
 sleep:$half_second
@@ -21,6 +21,6 @@ write:$name!
 hold:ctrl
 press:s
 release:ctrl
-sleep:1000
+sleep:1200
 write:kkjk.txt
 press:enter
