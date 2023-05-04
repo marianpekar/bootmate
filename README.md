@@ -1,6 +1,6 @@
 # Bootmate
 
-Bootmate is a lightweight automation tool that accepts via command line arguments a recipe file, path to an executable with any command line arguments for this executable and then it runs the provided executable and performs actions from the recipe.
+Bootmate is a lightweight automation tool that accepts via command line arguments a recipe file, path to an executable with any command line arguments for this executable and then it runs this executable and performs actions from the recipe.
 
 Or you can run Bootmate with just a path to a recipe. In this case, no executable will be run and Bootmate starts performing the actions immediately.
 
@@ -43,7 +43,7 @@ When you run this recipe on a notepad.exe, like this
 ```
 Bootmate.exe example.recipe "C:\Windows\notepad.exe"
 ```
-The process will start the Notepad, type the following text and save it as `kkjk.txt`
+the process will start the Notepad, type the following text and save it as `kkjk.txt`
 ```
 Knock...
 Knock...
@@ -155,7 +155,7 @@ a — z
 ```
 
 ## Bootmate.ini
-Optional `Bootmate.ini` currently supports the following global configuration pairs.
+Optional `bootmate.ini` currently supports the following global configuration pairs.
 
 | Key | Description | Default Value |
 | - | - | - |
