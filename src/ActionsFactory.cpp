@@ -2,6 +2,7 @@
 #include <fstream>
 #include <filesystem>
 #include <sstream>
+#include <chrono>
 #include <iomanip>
 #include "Actions.h"
 #include "ActionsFactory.h"
@@ -60,11 +61,19 @@ Lines ActionsFactory::LoadLines(const std::string& filename)
 int ActionsFactory::loopCount = 0;
 size_t ActionsFactory::loopBeginIdx = 0;
 Variables ActionsFactory::vars;
+BuildInVariables ActionsFactory::chronoVars = { "weekday", "day", "month", "year", "hour", "minute", "second" };
 Actions ActionsFactory::ProcessLines(Lines& lines)
 {
     Actions actions;
     for (size_t i = 0; i < lines.size(); ++i)
     {
+        if (skipToEndIf && (i == elseIdx || i == elseIfIdx))
+        {
+            i = endIfIdx;
+            skipToEndIf = false;
+            continue;
+        }
+
         std::string line = lines[i];
 
         if (line == "end" && loopCount > 1)
@@ -84,9 +93,58 @@ Actions ActionsFactory::ProcessLines(Lines& lines)
         for (auto& var : vars)
         {
             size_t varFind = 0;
-            while ((varFind = value.find("$" + var.first, varFind)) != std::string::npos) {
+            while ((varFind = value.find("$" + var.first, varFind)) != std::string::npos)
+            {
                 value.replace(varFind, std::string("$" + var.first).length(), var.second);
                 varFind += var.second.length();
+            }
+        }
+
+        for (auto& var : chronoVars)
+        {
+            size_t varFind = 0;
+            while ((varFind = value.find("$" + var, varFind)) != std::string::npos)
+            {
+                auto now = std::chrono::system_clock::now();
+                std::string result;
+                if (var == "weekday")
+                {
+                    auto weekday = std::chrono::weekday(std::chrono::floor<std::chrono::days>(now));
+                    result = std::to_string(static_cast<int>(weekday.c_encoding()));
+                }
+                else if (var == "day")
+                {
+                    auto ymd = std::chrono::year_month_day(std::chrono::floor<std::chrono::days>(now));
+                    result = std::to_string(static_cast<unsigned>(ymd.day()));
+                }
+                else if (var == "month")
+                {
+                    auto month = std::chrono::duration_cast<std::chrono::months>(now.time_since_epoch()).count() % 12 + 1;
+                    result = std::to_string(month);
+                }
+                else if (var == "year")
+                {
+                    auto year = std::chrono::duration_cast<std::chrono::years>(now.time_since_epoch()).count();
+                    result = std::to_string(year + 1970);
+                }
+                else if (var == "hour")
+                {
+                    auto hour = std::chrono::duration_cast<std::chrono::hours>(now.time_since_epoch()).count() % 24;
+                    result = std::to_string(hour);
+                }
+                else if (var == "minute")
+                {
+                    auto minute = std::chrono::duration_cast<std::chrono::minutes>(now.time_since_epoch()).count() % 60;
+                    result = std::to_string(minute);
+                }
+                else if (var == "second")
+                {
+                    auto second = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count() % 60;
+                    result = std::to_string(second);
+                }
+
+                value.replace(varFind, std::string("$" + var).length(), result);
+                varFind += result.length();
             }
         }
 
@@ -119,6 +177,10 @@ Actions ActionsFactory::ProcessLines(Lines& lines)
         {
             loopBeginIdx = i + 1;
             loopCount = std::stoi(value);
+        }
+        if (key == "if" || key == "else if")
+        {
+            BranchLines(i, lines, value);
         }
         else if (key == ActionTypeName.write)
         {
@@ -215,12 +277,72 @@ void ActionsFactory::EvaluateExpressions(std::string& value)
 
         Tokens tokens = Tokenizer::Tokenize(expr);
         Parser parser(tokens);
-        double result = parser.Parse()->Evaluate();
-
+        Node* node = parser.Parse();
         std::ostringstream oss;
-        oss << std::setprecision(8) << std::noshowpoint << result;
+        if (node->type == "double")
+        {
+            double result = node->Evaluate();
+            oss << std::setprecision(8) << std::noshowpoint << result;
+        }
+        else if (node->type == "bool")
+        {
+            bool result = node->EvaluateBool();
+            if (result == true)
+            {
+                oss << "true";
+            }
+            else
+            {
+                oss << "false";
+            }
+        }
 
         value.replace(startPos - leftTag.size(), endPos + rightTag.size() - startPos + leftTag.size(), oss.str());
         startPos = startPos - leftTag.size() + oss.str().size() + rightTag.size();
+    }
+}
+
+size_t ActionsFactory::ifIdx = 0;
+size_t ActionsFactory::elseIfIdx = 0;
+size_t ActionsFactory::elseIdx = 0;
+size_t ActionsFactory::endIfIdx = 0;
+bool ActionsFactory::skipToEndIf = false;
+void ActionsFactory::BranchLines(size_t& i, Lines& lines, const std::string inValue)
+{
+    size_t current = i;
+    ifIdx = current;
+    std::string key;
+    std::string value;
+    elseIdx = -1;
+    elseIfIdx = -1;
+    endIfIdx = lines.size() - 1;
+    while (key != "end if" || current > lines.size())
+    {
+        current++;
+        size_t find = lines[current].find(':');
+        key = lines[current].substr(0, find);
+        value = lines[current].substr(find + 1);
+        if (key == "else if")
+        {
+            elseIfIdx = current;
+        }
+        if (key == "else")
+        {
+            elseIdx = current;
+        }
+        else if (key == "end if")
+        {
+            endIfIdx = current;
+            break;
+        }
+    }
+
+    if (inValue == "true")
+    {
+        skipToEndIf = true;
+    }
+    else
+    {
+        i = (elseIfIdx != - 1 ? elseIfIdx : elseIdx) - 1;    
     }
 }

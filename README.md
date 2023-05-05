@@ -16,8 +16,8 @@ var:name Bootmate
 var:half_second 500
 
 loop:2
-write:Knock...
-press:enter
+  write:Knock...
+  press:enter
 end
 
 write:Who's there?
@@ -96,32 +96,6 @@ Each command has to be placed on a separate line. When a command accepts values,
 
 **) Use variables in values of any command by prefixing its name with a `$` (e.g. `$name`)
 
-## Expressions
-
-You can also use basic mathematical expressions (supported operators are `()`, `%`, `^`, `*`, `/`, `+`, and `-`) in any value, an expression has to start with `${` and ends with `}`. Here are some examples:
-
-```
-write:${2+4*2} is smaller than ${(2+4)*2} and ${(2+4)*-2} is a negative number.
-write: Two to the power of four is ${2^4}.
-```
-Writes `10 is smaller than 12 and -12 is a negative number. Two to the power of four is 16.`
-
-```
-var:pi 3.141592
-var:tau ${$pi*2}
-write:$tau is twice as large as $pi
-```
-Writes `6.283184 is twice as large as 3.141592`
-```
-var:n ${2+4*2} 
-n:${$n/2}
-loop:${$n+1}
-write:${$n*2} divided by 2 is $n
-press:enter
-end
-```
- Writes 6 lines of `10 divided by 2 is 5`
-
 ## List of Keys
 Some virtual keys have two options (the second option is in brackets)
 ```
@@ -153,6 +127,97 @@ divide (/)
 0 — 9
 a — z
 ```
+
+ ## Built-in Variables
+Bootmates has a couple of built-in variables. Here's a list of them:
+
+| Variable | Description |
+| --- | --- |
+| `$weekday` | The current day of the week from 1 to 7, where 1 is Sunday and 7 is Saturday. |
+| `$day` | The current day of the month |
+| `$month` | The current month |
+| `$year` | The current year |
+| `$hour` | The current hour in UTC, if you need to adjust to your timezone, you can do that with an expression like this `${$hour+2}` |
+| `$minute` | The current minute |
+| `$second` | The current second |
+
+## Expressions
+
+You can also use basic mathematical expressions (supported operators are `()`, `%`, `^`, `*`, `/`, `+`, and `-`) in any value, an expression has to start with `${` and ends with `}`. Here are some examples:
+
+```
+write:${2+4*2} is smaller than ${(2+4)*2} and ${(2+4)*-2} is a negative number.
+write:Two to the power of four is ${2^4}.
+```
+Writes `10 is smaller than 12 and -12 is a negative number. Two to the power of four is 16.`
+
+```
+var:pi 3.141592
+var:tau ${$pi*2}
+write:$tau is twice as large as $pi
+```
+Writes `6.283184 is twice as large as 3.141592`
+```
+var:n ${2+4*2} 
+n:${$n/2}
+loop:${$n+1}
+  write:${$n*2} divided by 2 is $n
+  press:enter
+end
+```
+ Writes 6 lines of `10 divided by 2 is 5`
+
+ ## Branching
+ 
+You can compare numbers and expressions using common comparison operators* and branch your recipe with `if`, `else if`, and `else` statements. **Notice the whole block has to end with `end if`**.
+
+|*) Comparison Operators | |
+|---|---|
+|`==`| equal |
+|`!=`| not equal |
+|`<`| less than |
+|`>`| greater than |
+|`<=`| less than or equal |
+|`=>`| greater than or equal |
+
+Here are a few examples:
+
+ ```
+if:${1+1 < 3}
+    sleep:5000
+end if
+write:Five seconds have passed
+ ``` 
+Because the expression `${1+1 < 3}` evaluates to `true`, program waits 5 seconds and then writes `Five seconds have passed`.
+
+ ```
+var:n 1
+if:${$n != 1}
+    sleep:5000
+else
+    write:One equals one
+end if
+ ``` 
+ Immediately writes `One equals one`
+
+ ```
+ if:${$weekday == 1}
+	write:Sunday
+else if:${$weekday == 2}
+	write:Monday
+else if:${$weekday == 3}
+	write:Tuesday
+else if:${$weekday == 4}
+	write:Wednesday
+else if:${$weekday == 5}
+	write:Thursday
+else if:${$weekday == 6}
+	write:Friday
+else
+	write:Saturday
+end if
+ ```
+ Writes the name of the current weekday (`$weekday` is a built-in variable)
 
 ## Bootmate.ini
 Optional `bootmate.ini` currently supports the following global configuration pairs.

@@ -3,7 +3,27 @@
 
 Node* Parser::Parse() 
 {
+    Node* left = ParseEquality();
+    return left;
+}
+
+Node* Parser::ParseEquality()
+{
     Node* left = ParseSubAdd();
+    while (pos < tokens.size())
+    {
+        std::string op = tokens[pos++];
+        if (op == ">" || op == "<" || op == "==" || op == "!=" || op == ">=" || op == "<=")
+        {
+            Node* right = ParseEquality();
+            left = new EqualityNode(op, left, right);
+        }
+        else
+        {
+            pos--;
+            break;
+        }
+    }
     return left;
 }
 
@@ -12,8 +32,8 @@ Node* Parser::ParseSubAdd()
     Node* left = ParseDivMul();
     while (pos < tokens.size()) 
     {
-        char op = tokens[pos++][0];
-        if (op == '+' || op == '-') 
+        std::string op = tokens[pos++];
+        if (op == "+" || op ==  "-") 
         {
             Node* right = ParseDivMul();
             left = new OperatorNode(op, left, right);
@@ -32,8 +52,8 @@ Node* Parser::ParseDivMul()
     Node* left = ParseExp();
     while (pos < tokens.size()) 
     {
-        char op = tokens[pos++][0];
-        if (op == '*' || op == '/') 
+        std::string op = tokens[pos++];
+        if (op == "*" || op == "/") 
         {
             Node* right = ParseExp();
             left = new OperatorNode(op, left, right);
@@ -52,8 +72,8 @@ Node* Parser::ParseExp()
     Node* left = ParseMod();
     while (pos < tokens.size()) 
     {
-        char op = tokens[pos++][0];
-        if (op == '^') {
+        std::string op = tokens[pos++];
+        if (op == "^") {
             Node* right = ParseMod();
             left = new OperatorNode(op, left, right);
         }
@@ -70,8 +90,8 @@ Node* Parser::ParseMod()
     Node* left = ParseUnary();
     while (pos < tokens.size()) 
     {
-        char op = tokens[pos++][0];
-        if (op == '%') {
+        std::string op = tokens[pos++];
+        if (op == "%") {
             Node* right = ParseUnary();
             left = new OperatorNode(op, left, right);
         }
@@ -90,7 +110,7 @@ Node* Parser::ParseUnary()
     if (token == "-") 
     {
         Node* node = ParseBrackets();
-        return new OperatorNode(token[0], new OperandNode(0), node);
+        return new OperatorNode(token, new OperandNode(0), node);
     }
     else if (token == "(")
     {
