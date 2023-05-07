@@ -57,6 +57,14 @@ bool EqualityNode::EvaluateBool() const
     {
         return left->Evaluate() >= right->Evaluate();
     }
+    else if (op == "&&")
+    {
+        return left->EvaluateBool() && right->EvaluateBool();
+    }
+    else if (op == "||")
+    {
+        return left->EvaluateBool() || right->EvaluateBool();
+    }
 
     return false;
 }

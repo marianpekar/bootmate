@@ -9,6 +9,7 @@ public:
     Parser(const std::vector<std::string>& tokens) : tokens(tokens), pos(0) {}
     Node* Parse();
 private:
+    Node* ParseLogical();
     Node* ParseEquality();
     Node* ParseSubAdd();
     Node* ParseDivMul();

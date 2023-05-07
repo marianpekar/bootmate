@@ -169,7 +169,7 @@ end
 
  ## Branching
  
-You can compare numbers and expressions using common comparison operators* and branch your recipe with `if`, `else if`, and `else` statements. **Notice the whole block has to end with `end if`**.
+You can compare numbers and expressions using common comparison* and logical** operators and branch your recipe with `if`, `else if`, and `else` statements. **Notice the whole block has to end with `end if`**.
 
 |*) Comparison Operators | |
 |---|---|
@@ -179,6 +179,11 @@ You can compare numbers and expressions using common comparison operators* and b
 |`>`| greater than |
 |`<=`| less than or equal |
 |`=>`| greater than or equal |
+
+|**) Logical Operators | |
+|---|---|
+|`&&`| and |
+|`\|\|`| or |
 
 Here are a few examples:
 
@@ -201,23 +206,32 @@ end if
  Immediately writes `One equals one`
 
  ```
- if:${$weekday == 1}
-	write:Sunday
+if:${$weekday == 1}
+    write:Sunday
 else if:${$weekday == 2}
-	write:Monday
+    write:Monday
 else if:${$weekday == 3}
-	write:Tuesday
+    write:Tuesday
 else if:${$weekday == 4}
-	write:Wednesday
+    write:Wednesday
 else if:${$weekday == 5}
-	write:Thursday
+   write:Thursday
 else if:${$weekday == 6}
-	write:Friday
+    write:Friday
 else
-	write:Saturday
+    write:Saturday
 end if
  ```
  Writes the name of the current weekday (`$weekday` is a built-in variable)
+
+```
+if:${$weekday == 1 || $weekday == 7}
+    write:It's weekend!
+else
+    write:Weekend starts in ${7 - $weekday} day(s)
+end if
+```
+Writes `It's weekend!` on Sunday and Saturday, otherwise writes how many days remain until Saturday, including the present day.
 
 ## Bootmate.ini
 Optional `bootmate.ini` currently supports the following global configuration pairs.

@@ -110,7 +110,7 @@ Actions ActionsFactory::ProcessLines(Lines& lines)
                 if (var == "weekday")
                 {
                     auto weekday = std::chrono::weekday(std::chrono::floor<std::chrono::days>(now));
-                    result = std::to_string(static_cast<int>(weekday.c_encoding()));
+                    result = std::to_string(static_cast<int>(weekday.c_encoding()) + 1);
                 }
                 else if (var == "day")
                 {

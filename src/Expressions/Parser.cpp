@@ -3,7 +3,27 @@
 
 Node* Parser::Parse() 
 {
+    Node* left = ParseLogical();
+    return left;
+}
+
+Node* Parser::ParseLogical()
+{
     Node* left = ParseEquality();
+    while (pos < tokens.size()) 
+    {
+        std::string op = tokens[pos++];
+        if (op == "&&" || op == "||" )
+        {
+            Node* right = ParseLogical();
+            left = new EqualityNode(op, left, right);
+        }
+        else
+        {
+            pos--;
+            break;
+        }
+    }
     return left;
 }
 

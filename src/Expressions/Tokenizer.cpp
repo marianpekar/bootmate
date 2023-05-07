@@ -5,7 +5,7 @@ Tokens Tokenizer::Tokenize(const std::string& expr)
 {
     Tokens tokens;
     std::string token;
-    const std::unordered_set<std::string> operators = { "==", "!=", "<=", ">=", "<", ">", "+", "-", "*", "/", "(", ")", "%", "^" };
+    const std::unordered_set<std::string> operators = { "==", "!=", "<=", ">=", "<", ">", "+", "-", "*", "/", "(", ")", "%", "^", "&&", "||" };
 
     for (size_t i = 0; i < expr.size();)
     {
