@@ -3,11 +3,10 @@
 #include "ConfigLoader.h"
 
 Dict ConfigLoader::ini;
-void ConfigLoader::LoadIniFile(const std::string filename)
-{
-    std::ifstream file(filename);
 
-    if (file.is_open())
+void ConfigLoader::LoadIniFile(const std::string& filename)
+{
+    if (std::ifstream file(filename); file.is_open())
     {
         std::string line;
 
@@ -34,11 +33,11 @@ void ConfigLoader::LoadIniFile(const std::string filename)
             if (line.empty())
                 continue;
 
-            size_t equals = line.find('=');
+            const size_t equals = line.find('=');
             if (equals != std::string::npos)
             {
                 std::string key = line.substr(0, equals);
-                std::string value = line.substr(equals + 1);
+                const std::string value = line.substr(equals + 1);
                 ini[key] = value;
             }
         }
@@ -48,12 +47,12 @@ void ConfigLoader::LoadIniFile(const std::string filename)
 #if _DEBUG
     else
     {
-        std::cerr << "Unable to open file: " << filename << std::endl;
+        std::cerr << "Unable to open file: " << filename << '\n';
     }
 #endif
 }
 
-bool ConfigLoader::HasElement(const std::string key)
+bool ConfigLoader::HasElement(const std::string& key)
 {
-    return ini.find(key) != ini.end();
+    return ini.contains(key);
 }

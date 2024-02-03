@@ -4,6 +4,7 @@
 #include <tlhelp32.h>
 #include <string>
 #include <map>
+#include <utility>
 #include "ConfigLoader.h"
 #include "WinUtils.h"
 
@@ -16,6 +17,7 @@ static struct ActionTypeName
     const char* sleep = "sleep";
     const char* setCursorPos = "set cursor";
     const char* moveCursor = "move cursor";
+    const char* pointCursor = "point cursor";
     const char* mouseClick = "click";
     const char* mouseScroll = "scroll";
     const char* holdMouseButton = "hold mouse";
@@ -37,13 +39,14 @@ struct Action
     const char* type;
     Action(const char* type) : type(type) {}
     virtual void Execute() = 0;
+    virtual ~Action() {}
 };
 
-struct WriteAction : public Action
+struct WriteAction : Action
 {
-    const std::string chars;
-    const DWORD delay;
-    WriteAction(const std::string chars) : Action(ActionTypeName.write), chars(chars),
+    std::string chars;
+    DWORD delay;
+    WriteAction(std::string chars) : Action(ActionTypeName.write), chars(std::move(chars)),
         delay(ConfigLoader::HasElement("iDefaultWriteDelay") ? std::stoi(ConfigLoader::ini["iDefaultWriteDelay"]) : 1) {}
     
     void Execute() override
@@ -152,10 +155,10 @@ static std::map<std::string, int> virtualKeys {
     { "z", 0x5A }
 };
 
-struct PressKeyAction : public Action
+struct PressKeyAction : Action
 {
     std::string keyName;
-    PressKeyAction(std::string keyName) : Action(ActionTypeName.press), keyName(keyName) {}
+    PressKeyAction(std::string keyName) : Action(ActionTypeName.press), keyName(std::move(keyName)) {}
 
     void Execute() override
     {
@@ -166,10 +169,10 @@ struct PressKeyAction : public Action
     }
 };
 
-struct ReleaseKeyAction : public Action
+struct ReleaseKeyAction : Action
 {
     std::string keyName;
-    ReleaseKeyAction(std::string keyName) : Action(ActionTypeName.release), keyName(keyName) {}
+    ReleaseKeyAction(std::string keyName) : Action(ActionTypeName.release), keyName(std::move(keyName)) {}
 
     void Execute() override
     {
@@ -181,10 +184,10 @@ struct ReleaseKeyAction : public Action
     }
 };
 
-struct HoldKeyAction : public Action
+struct HoldKeyAction : Action
 {
     std::string keyName;
-    HoldKeyAction(std::string keyName) : Action(ActionTypeName.hold), keyName(keyName) {}
+    HoldKeyAction(std::string keyName) : Action(ActionTypeName.hold), keyName(std::move(keyName)) {}
 
     void Execute() override
     {
@@ -195,13 +198,13 @@ struct HoldKeyAction : public Action
         SendInput(1, &input, sizeof(INPUT));
     }
 
-    ~HoldKeyAction()
+    ~HoldKeyAction() override
     {
         ReleaseKeyAction(keyName).Execute();
     }
 };
 
-struct SleepAction : public Action
+struct SleepAction : Action
 {
     DWORD ms;
     SleepAction(DWORD ms) : Action(ActionTypeName.sleep), ms(ms) {}
@@ -212,10 +215,10 @@ struct SleepAction : public Action
     }
 };
 
-struct SetCursorPosAction : public Action
+struct SetCursorPosAction : Action
 {
     int x, y;
-    SetCursorPosAction(int x, int y) : Action(ActionTypeName.setCursorPos), x(x), y(y) {}
+    SetCursorPosAction(const int x, const int y) : Action(ActionTypeName.setCursorPos), x(x), y(y) {}
 
     void Execute() override
     {
@@ -223,16 +226,35 @@ struct SetCursorPosAction : public Action
     }
 };
 
-struct MoveCursorAction : public Action
+struct MoveCursorAction : Action
 {
     int x, y;
-    MoveCursorAction(int x, int y) : Action(ActionTypeName.moveCursor), x(x), y(y) {}
+    MoveCursorAction(const int x, const int y) : Action(ActionTypeName.moveCursor), x(x), y(y) {}
 
     void Execute() override
     {
         POINT currentPos;
         GetCursorPos(&currentPos);
         SetCursorPos(currentPos.x + x, currentPos.y + y);
+    }
+};
+
+struct PointCursorAction : Action
+{
+    std::string windowTitle;
+    PointCursorAction(std::string windowTitle) : Action(ActionTypeName.pointCursor), windowTitle(std::move(windowTitle)) {}
+
+    void Execute() override
+    {
+        const HWND windowHandle =WinUtils::FindWindowByTitle(windowTitle);
+        if (windowHandle == NULL)
+            return;
+
+        RECT rect;
+        if(!GetWindowRect(windowHandle, &rect))
+            return;
+        
+        SetCursorPos(rect.left, rect.top);
     }
 };
 
@@ -251,11 +273,11 @@ static std::map<std::string, int> mouseDownEvents
 };
 
 
-struct MouseClickAction : public Action
+struct MouseClickAction : Action
 {
     DWORD dwFlags = 0;
 
-    MouseClickAction(std::string mouseClickName) : Action(ActionTypeName.mouseClick)
+    MouseClickAction(const std::string& mouseClickName) : Action(ActionTypeName.mouseClick)
     {    
         dwFlags = mouseDownEvents[mouseClickName] | mouseUpEvents[mouseClickName];
     }
@@ -269,11 +291,11 @@ struct MouseClickAction : public Action
     }
 };
 
-struct ReleaseMouseButtonAction : public Action
+struct ReleaseMouseButtonAction : Action
 {
     DWORD dwFlags = 0;
 
-    ReleaseMouseButtonAction(std::string mouseClickName) : Action(ActionTypeName.releaseMouseButton)
+    ReleaseMouseButtonAction(const std::string& mouseClickName) : Action(ActionTypeName.releaseMouseButton)
     {
         dwFlags = mouseUpEvents[mouseClickName];
     }
@@ -287,11 +309,11 @@ struct ReleaseMouseButtonAction : public Action
     }
 };
 
-struct HoldMouseButtonAction : public Action
+struct HoldMouseButtonAction : Action
 {
     std::string mouseClickName;
 
-    HoldMouseButtonAction(std::string mouseClickName) : Action(ActionTypeName.holdMouseButton), mouseClickName(mouseClickName) {}
+    HoldMouseButtonAction(std::string mouseClickName) : Action(ActionTypeName.holdMouseButton), mouseClickName(std::move(mouseClickName)) {}
 
     void Execute() override
     {
@@ -301,13 +323,13 @@ struct HoldMouseButtonAction : public Action
         SendInput(1, &input, sizeof(INPUT));
     }
 
-    ~HoldMouseButtonAction()
+    ~HoldMouseButtonAction() override
     {
         ReleaseMouseButtonAction(mouseClickName).Execute();
     }
 };
 
-struct MouseScrollAction : public Action
+struct MouseScrollAction : Action
 {
     DWORD scrollValue;
     
@@ -323,16 +345,16 @@ struct MouseScrollAction : public Action
     }
 };
 
-struct RunAction : public Action
+struct RunAction : Action
 {
     std::string exe;
     std::string args;
 
-    RunAction(std::string exe, std::string args) : Action(ActionTypeName.run), exe(exe), args(args) {}
+    RunAction(std::string exePath, std::string args) : Action(ActionTypeName.run), exe(std::move(exePath)), args(std::move(args)) {}
 
     void Execute() override
     {
-        HWND targetWindow = WinUtils::RunExe(exe.c_str(), args);
+        const HWND targetWindow = WinUtils::RunExe(exe.c_str(), args);
         if (targetWindow != NULL)
         {
             SetForegroundWindow(targetWindow);

@@ -64,6 +64,12 @@ click:left
 ```
 This first sets the cursor position to x 512 and y 400 pixels, then moves it along a square-shaped path clockwise and simulates a LMB click.
 
+You can also move cursor to a position of the top-left corner of a window with a given title using `point cursor` command.
+```
+point cursor:Calculator
+```
+This will move cursor to the top-left corner of a Calculator window, assuming the window with such title is present, otherwise nothing happens.
+
 On top of that, Bootmate is configurable by `bootmate.ini` you can but don't have to provide, and both ini and recipe file support single-line comments prefixed with `;`. If you need a semicolon you need to escape it with a backtick.
 
 ```
@@ -82,6 +88,7 @@ Each command has to be placed on a separate line. When a command accepts values,
 | release:{key*} | Releases a key. If the key is not currently held, nothing happens. | ```release:shift``` |
 | set cursor:{x} {y} | Move cursor an absolute position (position [0,0] is the top left corner of the screen). | ```set cursor:512 400``` |
 | move cursor:{x} {y} | Move cursor to a relative position. | ```move cursor:0 10``` |
+| point cursor:{windowTitle} | Move cursor to a position of the top-left corner of a window with a given title. | ```point cursor:Calculator``` |
 | click:{left/middle/right} | Performs a left, middle, or right mouse button click. | ```click:right``` |
 | hold mouse:{left/middle/right} | Holds a mouse button until `release mouse` is called or program ends. | ```hold mouse:left``` |
 | release mouse:{left/middle/right} | Releases a mouse button. If the button is not currently held, nothing happens. | ```release mouse:left``` |
